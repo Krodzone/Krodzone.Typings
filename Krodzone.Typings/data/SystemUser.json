@@ -1,0 +1,26 @@
+﻿[
+    {
+        "UserID": 100,
+        "FirstName": "Brian",
+        "LastName": "Brown",
+        "FullName": "Brian Brown",
+        "Email": "brian@krodzone.com",
+        "Password": "P@$$w0rd",
+        "Role": {
+            "RoleID": 4,
+            "Name": "Administrator"
+        }
+    },
+    {
+        "UserID": 101,
+        "FirstName": "Andrew",
+        "LastName": "Fenhoff",
+        "FullName": "Andrew Fenhoff",
+        "Email": "afenhoff@krodzone.com",
+        "Password": "P@$$w0rd",
+        "Role": {
+            "RoleID": 4,
+            "Name": "Administrator"
+        }
+    }
+]

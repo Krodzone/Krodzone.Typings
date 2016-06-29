@@ -1,0 +1,65 @@
+﻿
+<div class="row view-input-form">
+
+    <formvalidator validationgroup="projectEdit" errorcontainerid="projectErrorContainer" errormessageid="projectErrorMessage">
+
+        <div class="col-md-12">
+
+            <div id="projectErrorContainer" class="row" hidden="hidden">
+                <div class="col-md-12">
+                    <div id="projectErrorMessage" class="alert"></div>
+                </div>
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-md-6">
+                    <label for="projectStatus">Status:</label>
+                    <select id="projectStatus" class="form-control" binding="DataType: string; Model: SelectedProject.Status;" validation="DataType: string; rule: regex; pattern: (([A-Za-z]+)\s*){1,}; message: A valid Status must be selected!">
+                        <option value="">-- Select Status --</option>
+                        <option value="Requirements">Requirements</option>
+                        <option value="Open - Not Started">Open - Not Started</option>
+                        <option value="Active">Active</option>
+                        <option value="Completed">Completed</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="col-md-6">&nbsp;</div>
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-md-12">
+                    <label for="projectName">Name:</label>
+                    <input id="projectName" class="form-control" type="text" maxlength="50" binding="DataType: string; Model: SelectedProject.Name;" validation="DataType: string; rule: regex; pattern: (([0-9A-Za-z]+)\s*){1,}; message: A valid Project Name must be provided!" />
+                </div>
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-md-4">
+                    <label for="project">Est Hours:</label>
+                    <input id="projectEstHours" class="form-control" type="text" maxlength="50" binding="DataType: int; Model: SelectedProject.EstimatedHours;" validation="DataType: int; rule: range; min: 1; max: *; message: A numeric value greater than zero must be provided for Estimated Hours!" />
+                </div>
+
+                <div class="col-md-4">
+                    <label for="projectCompHours">Comp Hours:</label>
+                    <input id="projectCompHours" class="form-control" type="text" maxlength="50" binding="DataType: int; Model: SelectedProject.CompletedHours;" validation="DataType: int; rule: range; min: 0; max: *; message: A numeric value must be provided for Completed Hours!" />
+                </div>
+
+                <div class="col-md-4">
+                    <label for="projectRemHours">Rem Hours:</label>
+                    <input id="projectRemHours" class="form-control" type="text" maxlength="50" binding="DataType: int; Model: SelectedProject.RemainingHours;" validation="DataType: int; rule: range; min: 0; max: *; message: A numeric value must be provided for Remaining Hours!" />
+                </div>
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-md-12">
+                    <label for="projectNotes">Notes:</label>
+                    <textarea id="projectNotes" rows="6" class="form-control" maxlength="200" binding="DataType: string; Model: SelectedProject.Notes"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+    </formvalidator>
+
+</div>

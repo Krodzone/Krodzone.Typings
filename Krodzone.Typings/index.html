@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html application="KrodSpaTest">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Krodzone Technologies</title>
+    <meta charset="utf-8" />
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="css/bootstrap.spacelab.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+
+    <link href="css/krodzone-main.0.1.min.css" rel="stylesheet" />
+    <link href="css/krodspa-main.0.1.min.css" rel="stylesheet" />
+    <link href="css/krodzone-layout.0.1.min.css" rel="stylesheet" />
+
+</head>
+<body controller="MainController">
+    <header>
+        <div>
+
+            <div class="header-content">
+                <div class="Logo">&nbsp;</div>
+
+                <div class="Site-Title">
+                    &nbsp;
+                </div>
+
+            </div>
+
+        </div>
+    </header>
+
+    <div class="content-container">
+
+        <div class="content">
+
+            <div class="row nav-controls">
+                <div class="col-md-6 margin-top-25">&nbsp;</div>
+
+                <div class="col-md-6 margin-top-25">
+                    <div class="btn-group pull-right">
+                        <a class="btn btn-danger" id="lblUser"><variable model="SystemUser.FullName"></variable></a>
+                        <a class="btn btn-danger dropdown-toggle show-pointer" data-toggle="dropdown">
+                            <span class="fa fa-caret-down"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li click="Logout()"><a id="logout" class="show-pointer"><i class="fa fa-unlock fa-fw"></i>&nbsp;&nbsp;Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-12" view-container>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <div>
+            &copy; Krodzone Technologies, LLC <span id="currentYear"></span>
+        </div>
+    </footer>
+
+
+    <script src="scripts/jquery-2.1.4.js"></script>
+    <script src="scripts/bootstrap.js"></script>
+
+    <script src="scripts/krodzone-layout.0.1.min.js"></script>
+    <script src="scripts/krodspa.0.1.min.js"></script>
+
+    <!--<script src="scripts/typings/krodzone/KrodSpa.js"></script>-->
+
+    <script src="scripts/krodspa.testing.0.1.js"></script>
+    <script src="scripts/controllers/krodspa.testing.login-controller.0.1.js"></script>
+    <script src="scripts/controllers/krodspa.testing.customer-controller.0.1.js"></script>
+    <script src="scripts/controllers/krodspa.testing.projects-controller.0.1.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            
+        });
+
+    </script>
+</body>
+</html>

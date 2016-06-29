@@ -1,0 +1,105 @@
+﻿[
+    {
+        "CustomerID": 100,
+        "ParentID": 0,
+        "Name": "ABC Company, Inc.",
+        "Contact": "James Dobson",
+        "Phone": "513-867-5309",
+        "StatusID": 1,
+        "Status": "Active",
+        "Projects": [
+            {
+                "ProjectID": 196,
+                "CustomerID": 100,
+                "Name": "Custom CRM",
+                "EstimatedHours": 1500,
+                "CompletedHours": 500,
+                "RemainingHours": 1000,
+                "Status": "Late",
+                "Notes": "Project late due to other projects taking priority."
+            },
+            {
+                "ProjectID": 200,
+                "CustomerID": 100,
+                "Name": "Task Scheduler",
+                "EstimatedHours": 700,
+                "CompletedHours": 700,
+                "RemainingHours": 0,
+                "Status": "Completed",
+                "Notes": "Project completed on time."
+            },
+            {
+                "ProjectID": 201,
+                "CustomerID": 100,
+                "Name": "Data Entry Automator",
+                "EstimatedHours": 80,
+                "CompletedHours": 0,
+                "RemainingHours": 80,
+                "Status": "Open - Not Started",
+                "Notes": "Project will be started once CRM completed."
+            },
+            {
+                "ProjectID": 202,
+                "CustomerID": 100,
+                "Name": "SharePoint GUI",
+                "EstimatedHours": 40,
+                "CompletedHours": 0,
+                "RemainingHours": 40,
+                "Status": "Open - Not Started",
+                "Notes": "Project will be started once CRM completed."
+            }
+        ]
+    },
+    {
+        "CustomerID": 101,
+        "ParentID": 0,
+        "Name": "Contractor Haven",
+        "Contact": "John Doe",
+        "Phone": "512-867-5309",
+        "StatusID": 1,
+        "Status": "Active",
+        "Projects": [
+            {
+                "ProjectID": 197,
+                "CustomerID": 101,
+                "Name": "Vanity Top Estimator",
+                "EstimatedHours": 500,
+                "CompletedHours": 500,
+                "RemainingHours": 0,
+                "Status": "Completed",
+                "Notes": "Project completed on time."
+            },
+            {
+                "ProjectID": 198,
+                "CustomerID": 101,
+                "Name": "Customer Order Portal",
+                "EstimatedHours": 1000,
+                "CompletedHours": 750,
+                "RemainingHours": 250,
+                "Status": "Active",
+                "Notes": "Project actively being worked, and currently on time."
+            }
+        ]
+    },
+    {
+        "CustomerID": 102,
+        "ParentID": 0,
+        "Name": "Deliquent Corporation",
+        "Contact": "Joe Deadbeat",
+        "Phone": "202-666-6666",
+        "StatusID": 3,
+        "Status": "Suspended",
+        "Projects": [
+            {
+                "ProjectID": 199,
+                "CustomerID": 102,
+                "Name": "Freeload Automater",
+                "EstimatedHours": 2000,
+                "CompletedHours": 500,
+                "RemainingHours": 1500,
+                "Status": "On Hold",
+                "Notes": "Project on hold due to lack of payment."
+            }
+        ]
+    }
+]

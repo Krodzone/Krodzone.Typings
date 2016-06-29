@@ -1,0 +1,84 @@
+﻿
+<div class="content-row black-border border-bottom border-1">
+
+    <div class="col-20 content-header margin-top-50">
+        <i class="fa fa-folder-o" aria-hidden="true"></i>&nbsp;&nbsp;Customer Projects
+    </div>
+
+</div>
+
+<div class="content-row margin-top-30">
+
+    <div class="col-10">
+        <a href="#/customers">Customers</a>&nbsp;/&nbsp;<variable model="SelectedCustomer.Name"></variable>
+    </div>
+
+    <div class="col-10">
+        <button class="btn btn-sm btn-primary float-right" click="AddCustomer()"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;&nbsp;Add Project</button>
+    </div>
+
+</div>
+
+<div class="content-row">
+
+    <div class="col-20">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr style="border: none;">
+                    <td colspan="7">
+                        <span class="pull-right">
+                            <a id="projFilterToggle" class="show-pointer"></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr id="projFilterContainer" filter-container style="border: none;">
+                    <td colspan="4">
+                        <input id="projectNameFilter" type="text" class="form-control" placeholder="Filter: Project Name" />
+                    </td>
+                    <td colspan="4">
+                        <input id="projectStatusFilter" type="text" class="form-control" placeholder="Filter: Project Status" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Name</th>
+                    <th>Estimated Hrs</th>
+                    <th>Completed Hrs</th>
+                    <th>Remaining Hrs</th>
+                    <th>Status</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody iteration="model: SelectedCustomer.Projects; paginationid: projPagCtl; pagetotal: 20; filter: Name=projectNameFilter,Status=projectStatusFilter"
+                   filter-toggle='ToggleID: projFilterToggle; ContainerID: projFilterContainer; ShowText: Filter <i class="fa fa-chevron-down" aria-hidden="true"></i>; HideText: Filter <i class="fa fa-chevron-up" aria-hidden="true"></i>;'>
+                <tr template-type="data" hidden="hidden">
+                    <td>
+                        <button class="btn btn-xs btn-default" click="EditProject($item.ProjectID)" title="Edit Project"><i class="fa fa-pencil"></i></button>
+                    </td>
+                    <td>{{Name}}</td>
+                    <td>{{EstimatedHours}}</td>
+                    <td>{{CompletedHours}}</td>
+                    <td>{{RemainingHours}}</td>
+                    <td>{{Status}}</td>
+                    <td>
+                        <button class="btn btn-xs btn-danger" click="RemoveProject($item.ProjectID)" title="Remove Project"><i class="fa fa-remove"></i></button>
+                    </td>
+                </tr>
+                <tr template-type="dataloading">
+                    <td colspan="7" style="text-align: center;">
+                        <i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;&nbsp;Loading Project Data...
+                    </td>
+                </tr>
+                <tr template-type="nodata" hidden="hidden">
+                    <td colspan="7" style="text-align: center;"><h4>There Are No Items to Display</h4></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td id="projPagCtl" colspan="7"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</div>

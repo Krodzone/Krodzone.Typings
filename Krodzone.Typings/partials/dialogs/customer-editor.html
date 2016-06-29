@@ -1,0 +1,122 @@
+﻿
+<div class="row view-input-form">
+
+    <formvalidator validationgroup="customerEdit" errorcontainerid="customerErrorContainer" errormessageid="customerErrorMessage">
+
+        <div class="col-md-12">
+
+            <div id="customerErrorContainer" class="row" hidden="hidden">
+                <div class="col-md-12">
+                    <div id="customerErrorMessage" class="alert"></div>
+                </div>
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-md-6">
+                    <label for="customerStatusID">Status:</label>
+                    <select id="customerStatusID" class="form-control" binding="DataType: int; Model: SelectedCustomer.StatusID;" validation="DataType: int; rule: range; min: 1; max: *; message: A valid Status must be selected!">
+                        <option value="0">-- Select Status --</option>
+                        <option value="1">Active</option>
+                        <option value="2">Inactive</option>
+                        <option value="3">Suspended</option>
+                        <option value="4">Prospect</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input id="customerStatus" type="hidden" maxlength="150" binding="DataType: string; Model: SelectedCustomer.Status;" />
+                </div>
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-md-12">
+                    <label for="customerName">Name:</label>
+                    <input id="customerName" class="form-control" type="text" maxlength="50" binding="DataType: string; Model: SelectedCustomer.Name;" validation="DataType: string; rule: regex; pattern: (([0-9]|[a-z])\s*){3,}; message: A valid Customer Name consisting of a minimum of 3 characters must be provided!" />
+                </div>
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-md-12">
+                    <label for="customerContact">Contact:</label>
+                    <input id="customerContact" class="form-control" type="text" maxlength="50" binding="DataType: string; Model: SelectedCustomer.Contact;" validation="DataType: string; rule: regex; pattern: ([a-z]{3,}\s*)+; message: A valid Customer Contact consisting of a minimum of 10 characters must be provided!" />
+                </div>
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-md-12">
+                    <label for="customerPhone">Phone:</label>
+                    <input id="customerPhone" class="form-control" type="text" maxlength="50" binding="DataType: string; Model: SelectedCustomer.Phone;" validation="DataType: string; rule: regex; pattern: ([0-9]{3}\-[0-9]{3}\-[0-9]{4})+; message: A valid 10 digit Phone Number (###-###-####) must be provided!" />
+                </div>
+            </div>
+
+            <!--
+                Customer Projects Expandable Panel
+            -->
+            <div id="customerProjectPanel" class="row">
+                <div class="col-md-12">
+
+                    <div class="expandable-panel">
+                        <div class="header modaldialog show-pointer">
+                            <div>Customer Projects</div>
+                            <span id="projectToggle" class="fa fa-caret-down"></span>
+                        </div>
+
+                        <div id="projectBody" class="body" hidden="hidden">
+
+                            <div class="row margin-top-10">
+                                <div class="col-md-12">
+                                    <table class="table table-condensed table-hover">
+                                        <thead>
+                                            <tr style="border: none;">
+                                                <td colspan="5">
+                                                    <span class="pull-right">
+                                                        <a id="projFilterToggle" class="show-pointer"></a>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr id="projFilterContainer" filter-container style="border: none;">
+                                                <td colspan="5">
+                                                    <input id="projectNameFilter" type="text" class="form-control" placeholder="Filter: Project Name" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Est Hrs</th>
+                                                <th>Cmp Hrs</th>
+                                                <th>Rem Hrs</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody iteration="model: SelectedCustomer.Projects; paginationid: projPagCtl; pagetotal: 2; filter: Name=projectNameFilter"
+                                               filter-toggle='ToggleID: projFilterToggle; ContainerID: projFilterContainer; ShowText: Filter <i class="fa fa-chevron-down" aria-hidden="true"></i>; HideText: Filter <i class="fa fa-chevron-up" aria-hidden="true"></i>;'>
+                                            <tr template-type="data">
+                                                <td>{{Name}}</td>
+                                                <td>{{EstimatedHours}}</td>
+                                                <td>{{CompletedHours}}</td>
+                                                <td>{{RemainingHours}}</td>
+                                                <td>{{Status}}</td>
+                                            </tr>
+                                            <tr template-type="nodata">
+                                                <td colspan="5" style="text-align: center;"><h4>There Are No Items to Display</h4></td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td id="projPagCtl" colspan="5"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </formvalidator>
+
+</div>
