@@ -1,0 +1,59 @@
+﻿<div class="col-md-12">
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr style="border: none;">
+                <td colspan="6">
+                    <span class="pull-right">
+                        <a id="filterToggle" class="show-pointer"></a>
+                    </span>
+                </td>
+            </tr>
+            <tr id="filterContainer" filter-container style="border: none;">
+                <td colspan="2">
+                    <input id="customerNameFilter" type="text" class="form-control" placeholder="Filter: Customer Name" />
+                </td>
+                <td colspan="2">
+                    <input id="customerContactFilter" type="text" class="form-control" placeholder="Filter: Customer Contact" />
+                </td>
+                <td colspan="2">
+                    <input id="customerStatusFilter" type="text" class="form-control" placeholder="Filter: Customer Status" />
+                </td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Customer Name</th>
+                <th>Contact</th>
+                <th>Phone Number</th>
+                <th>Status</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody id="dsktpContainer">
+            <tr template-type="data" hidden="hidden">
+                <td>
+                    <button class="btn btn-xs btn-default" click="EditCustomer($item.CustomerID)" title="Edit Customer"><i class="fa fa-pencil"></i></button>
+                </td>
+                <td><a class="show-pointer" click="ShowProjects($item.CustomerID)">{{Name}}</a></td>
+                <td>{{Contact}}</td>
+                <td>{{Phone}}</td>
+                <td>{{Status}}</td>
+                <td>
+                    <button class="btn btn-xs btn-danger" click="RemoveCustomer($item.CustomerID)" title="Remove Customer"><i class="fa fa-remove"></i></button>
+                </td>
+            </tr>
+            <tr template-type="dataloading">
+                <td colspan="6" style="text-align: center;">
+                    <i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;&nbsp;Loading Customer Data...
+                </td>
+            </tr>
+            <tr template-type="nodata" hidden="hidden">
+                <td colspan="6" style="text-align: center;"><h4>There Are No Items to Display</h4></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td id="paginationCtl" colspan="6"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

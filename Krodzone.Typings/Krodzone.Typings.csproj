@@ -25,10 +25,15 @@
     <Content Include="css\bootstrap-theme.min.css" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\bootstrap.spacelab.min.css" />
+    <Content Include="fonts\bootstrap\glyphicons-halflings-regular.svg" />
     <Content Include="images\exclamation.png" />
     <Content Include="images\information.png" />
     <Content Include="images\question.png" />
     <Content Include="index.html" />
+    <Content Include="partials\controls\desktop-customer-grid.html" />
+    <Content Include="partials\controls\desktop-project-grid.html" />
+    <Content Include="partials\controls\mobile-customer-grid.html" />
+    <Content Include="partials\controls\mobile-project-grid.html" />
     <Content Include="partials\dialogs\customer-editor.html" />
     <Content Include="partials\dialogs\project-editor.html" />
     <Content Include="partials\views\customers.html" />
@@ -38,16 +43,27 @@
     <Content Include="scripts\controllers\krodspa.testing.customer-controller.0.1.js" />
     <Content Include="scripts\controllers\krodspa.testing.login-controller.0.1.js" />
     <Content Include="scripts\controllers\krodspa.testing.projects-controller.0.1.js" />
+    <Content Include="packages.config" />
+    <Content Include="images\.keep" />
+    <Content Include="fonts\bootstrap\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\bootstrap\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\bootstrap\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\bootstrap\glyphicons-halflings-regular.eot" />
     <Content Include="scripts\jquery-2.1.4.js" />
+    <Content Include="scripts\kroddom.0.1.min.js" />
     <Content Include="scripts\krodspa.0.1.min.js" />
     <Content Include="scripts\krodspa.testing.0.1.js" />
+    <Content Include="scripts\krodzone-controls.0.1.min.js" />
     <Content Include="scripts\krodzone-layout.0.1.js" />
     <Content Include="scripts\krodzone-layout.0.1.min.js" />
+    <Content Include="testing.html" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\krodzone\KrodDom.ts" />
     <TypeScriptCompile Include="scripts\typings\krodzone\KrodSpa.ts" />
+    <TypeScriptCompile Include="scripts\typings\krodzone\Krodzone.Controls.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\krodzone-layout.0.1.scss" />
@@ -55,6 +71,7 @@
     <Content Include="css\krodspa-main.0.1.scss" />
     <Content Include="data\SystemUser.json" />
     <Content Include="data\Customers.json" />
+    <Content Include="css\krodzone-controls.0.1.scss" />
     <None Include="Preview Publish.pubxml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
@@ -63,9 +80,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="partials\controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>

@@ -1,0 +1,95 @@
+﻿
+<div class="table-row">
+    <div class="content-cell">
+        <span class="pull-right">
+            <a id="custMobFilterToggle" class="show-pointer"></a>
+        </span>
+    </div>
+</div>
+
+<div class="table-row">
+    <div id="custMobFilterContainer" class="content-cell">
+        <input id="custMobNameFilter" type="text" class="form-control" placeholder="Filter: Customer Name" />
+    </div>
+</div>
+
+<div class="table-row">
+    <div id="mobileContainer" class="content-cell">
+        <div template-type="data" class="table-layout">
+
+            <div class="table-row">
+                <div class="content-cell">
+                    <button class="btn btn-sm btn-default pull-left" click="EditCustomer($item.CustomerID)" title="Edit Customer"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button>
+                </div>
+                <div class="content-cell">
+                    <button class="btn btn-sm btn-danger pull-right" click="RemoveCustomer($item.CustomerID)" title="Remove Customer"><i class="fa fa-remove"></i>&nbsp;&nbsp;Delete</button>
+                </div>
+            </div>
+
+            <div class="table-row margin-top-10">
+                <div class="header-cell">
+                    Name:
+                </div>
+                <div class="content-cell">
+                    <a class="show-pointer" click="ShowProjects($item.CustomerID)">{{Name}}</a>
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="header-cell">
+                    Contact:
+                </div>
+                <div class="content-cell">
+                    {{Contact}}
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="header-cell">
+                    Phone:
+                </div>
+                <div class="content-cell">
+                    {{Phone}}
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="header-cell">
+                    Status:
+                </div>
+                <div class="content-cell">
+                    {{Status}}
+                </div>
+            </div>
+
+        </div>
+
+        <div template-type="dataloading" class="table-layout">
+
+            <div class="table-row">
+                <div class="content-cell">
+                    <div style="text-align: center;">
+                        <i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;&nbsp;Loading Customer Data...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div template-type="nodata" class="table-layout">
+
+            <div class="table-row">
+                <div class="content-cell">
+                    <h4>There Are No Items to Display</h4>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="table-row">
+    <div class="content-cell">
+        <div id="custMobPagCtl" class="margin-top-10"></div>
+    </div>
+</div>

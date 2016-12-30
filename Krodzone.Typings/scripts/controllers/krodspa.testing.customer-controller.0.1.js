@@ -20,7 +20,7 @@ var app = KrodSpa.Application.Get("KrodSpaTest");
  *  
  *****************************************************************************************************************************************************************************/
 app.Controller("CustomerController", function ($scope, $webQuery) {
-
+    var $rootScope = app.$rootScope;
 
     /************************************************************************************************************************************
      * 
@@ -215,6 +215,10 @@ app.Controller("CustomerController", function ($scope, $webQuery) {
                     true,
                     true,
                     function (callback) {
+                        //if ($rootScope && $rootScope.CustomerController) {
+                        //    $rootScope.CustomerController.Iterations.Refresh();
+                        //}
+                        params.Refresh();
                         callback(true, "Customer Data Successfully Saved!");
                     },
                     function (sender) {

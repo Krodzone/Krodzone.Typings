@@ -1,0 +1,614 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Krodzone Typings - Testing</title>
+    <meta charset="utf-8" />
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="css/bootstrap.spacelab.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+
+    <link href="css/krodzone-main.0.1.min.css" rel="stylesheet" />
+    <link href="css/krodspa-main.0.1.min.css" rel="stylesheet" />
+    <link href="css/krodzone-layout.0.1.min.css" rel="stylesheet" />
+    <link href="css/krodzone-controls.0.1.min.css" rel="stylesheet" />
+
+    <style>
+
+        .table {
+            width: 100%;
+            display: table;
+            border-collapse: collapse;
+        }
+
+        .table .table-row{
+            width: 100%;
+            display: table-row;
+        }
+        
+        .table .table-row .header-cell {
+            display: table-cell;
+            padding: 2px;
+            font-weight: bold;
+        }
+
+        .table .table-row .table-cell {
+            display: table-cell;
+            padding: 2px;
+        }
+
+        .my-box {
+            width: 200px;
+            height: 200px;
+            background-color: #138f32;
+            border-left: 1px solid #000;
+            margin: auto;
+        }
+
+        /*.calendar {
+            width: 216px;
+            margin: auto;
+            font-family: Arial;
+            font-size: 90%;
+            display: inline-grid;
+            border-collapse: collapse;
+            border: 1px solid #e8e4e4;
+            border-radius: 5px;
+            background-color: #fff !important;
+            padding: 3px;
+            z-index: 1000000;
+        }
+
+        .calendar table {
+            width: 100%;
+            height: 200px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #fff !important;
+        }
+        
+        .calendar caption {
+            width: 100%;
+            height: 30px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .calendar th {
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .calendar td {
+            text-align: center;
+            cursor: pointer;
+        }
+  
+        .calendar tbody td:hover {
+            margin: 2px;
+            outline: none;
+            color: #fff;
+            border-radius: 5px;
+            background-color: #2626ff;
+        }
+  
+        .calendar tbody td:focus {
+            margin: 2px;
+            outline: none;
+            color: #fff;
+            border-radius: 5px;
+            background-color: #f38907;
+        }
+  
+        .calendar tfoot td {
+            text-align: left;
+            color: #222;
+            padding: 3px;
+            font-size: 80%;
+        }
+
+        .calendar tfoot td span {
+            width: 25px !important;
+            height: 25px !important;
+            margin: 2px;
+            border: 1px solid #ff0000;
+        }
+        
+        .calendar .nav {
+            width: 30px;
+            height: 30px;
+            padding-top: 1px;
+        }
+        
+        .calendar .left {
+            float: left;
+        }
+
+        .calendar .right {
+            float: right;
+        }
+
+        .calendar .title {
+            width: 145px;
+            height: 30px;
+            line-height: 30px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .calendar .hdr-cal-view {
+            width: 14.2857%;
+            height: 20px;
+            font-size: 75% !important;
+        }
+  
+        .calendar .hdr-month-view {
+            width: 100%;
+            height: 1px;
+            font-size: 2% !important;
+        }
+  
+        .calendar .cal-date {
+            width: 14.2857%;
+            height: 25px;
+            line-height: 25px;
+        }
+  
+        .calendar .cal-month {
+            width: 90px;
+            height: 25px;
+            line-height: 25px;
+        }
+        
+        .calendar .active-month {
+            color: #222;
+        }
+  
+        .calendar .inactive-month {
+            color: #999;
+        }
+  
+        .calendar .today {
+            border: 1px solid #ff0000;
+        }*/
+  
+    </style>
+
+</head>
+<body>
+
+    <div class="content">
+
+        <div class="content-row margin-top-50">
+
+            <div class="column-20">
+
+                <div class="width-25 centered height-50 center-text middle middle-align border-2 border-bottom black-border">
+                    <h4>Hello World!</h4>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="content-row margin-top-50">
+
+            <div class="column-05 heigt-300 padding-top-50">
+                <calendar id="calOne" selected-date="4/25/2015"></calendar>
+            </div>
+
+            <div class="column-10">
+                &nbsp;
+            </div>
+
+            <div class="column-05 heigt-300 padding-top-50">
+                <div id="calTwo" calendar></div>
+            </div>
+
+        </div>
+
+        <div class="content-row margin-top-50">
+
+            <div class="column-03">
+                <div class="calendar">
+                    <table>
+                        <caption>
+                            <span class="nav left"><button class="btn btn-xs btn-default"><i class="fa fa-chevron-left" aria-hidden="true"></i></button></span>
+                            <span class="title">June 2016</span>
+                            <span class="nav right"><button class="btn btn-xs btn-default"><i class="fa fa-chevron-right" aria-hidden="true"></i></button></span>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>SUN</th>
+                                <th>MON</th>
+                                <th>TUE</th>
+                                <th>WED</th>
+                                <th>THU</th>
+                                <th>FRI</th>
+                                <th>SAT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>29</td>
+                                <td>30</td>
+                                <td>31</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>6</td>
+                                <td>7</td>
+                                <td>8</td>
+                                <td>9</td>
+                                <td>10</td>
+                                <td>11</td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td>13</td>
+                                <td>14</td>
+                                <td>15</td>
+                                <td>16</td>
+                                <td>17</td>
+                                <td>18</td>
+                            </tr>
+                            <tr>
+                                <td>19</td>
+                                <td>20</td>
+                                <td>21</td>
+                                <td>22</td>
+                                <td>23</td>
+                                <td>24</td>
+                                <td>25</td>
+                            </tr>
+                            <tr>
+                                <td>26</td>
+                                <td>27</td>
+                                <td>28</td>
+                                <td>29</td>
+                                <td>30</td>
+                                <td>1</td>
+                                <td>2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="column-07">
+                <div id="cssTest">&nbsp;</div>
+            </div>
+
+            <div class="column-05 heigt-300 padding-top-50">
+                <div class="calendar">
+                    <table>
+                        <caption>
+                            <span class="nav left"><button class="btn btn-xs btn-default"><i class="fa fa-chevron-left" aria-hidden="true"></i></button></span>
+                            <span class="title">2016</span>
+                            <span class="nav right"><button class="btn btn-xs btn-default"><i class="fa fa-chevron-right" aria-hidden="true"></i></button></span>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th class="hdr-month-view" colspan="3">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="cal-month">Jan</td>
+                                <td class="cal-month">Feb</td>
+                                <td class="cal-month">Mar</td>
+                            </tr>
+                            <tr>
+                                <td class="cal-month">Apr</td>
+                                <td class="cal-month">May</td>
+                                <td class="cal-month">Jun</td>
+                            </tr>
+                            <tr>
+                                <td class="cal-month">Jul</td>
+                                <td class="cal-month">Aug</td>
+                                <td class="cal-month">Sep</td>
+                            </tr>
+                            <tr>
+                                <td class="cal-month">Oct</td>
+                                <td class="cal-month">Nov</td>
+                                <td class="cal-month">Dec</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="7">
+                                    Today&nbsp;<span>&nbsp;&nbsp;&nbsp;</span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="column-05 heigt-300 padding-top-50 border-1 border-box black-border">
+                <div class="calendar">
+                    <table>
+                        <caption>
+                            <span class="nav left"><button class="btn btn-xs btn-default"><i class="fa fa-chevron-left" aria-hidden="true"></i></button></span>
+                            <span class="title">June 2016</span>
+                            <span class="nav right"><button class="btn btn-xs btn-default"><i class="fa fa-chevron-right" aria-hidden="true"></i></button></span>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th class="hdr-cal-view">SUN</th>
+                                <th class="hdr-cal-view">MON</th>
+                                <th class="hdr-cal-view">TUE</th>
+                                <th class="hdr-cal-view">WED</th>
+                                <th class="hdr-cal-view">THU</th>
+                                <th class="hdr-cal-view">FRI</th>
+                                <th class="hdr-cal-view">SAT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="cal-date">
+                                <td class="inactive-month">29</td>
+                                <td class="inactive-month">30</td>
+                                <td class="inactive-month">31</td>
+                                <td class="active-month">1</td>
+                                <td class="active-month">2</td>
+                                <td class="active-month">3</td>
+                                <td class="active-month">4</td>
+                            </tr>
+                            <tr class="cal-date">
+                                <td class="active-month">5</td>
+                                <td class="active-month">6</td>
+                                <td class="active-month">7</td>
+                                <td class="active-month">8</td>
+                                <td class="active-month">9</td>
+                                <td class="active-month">10</td>
+                                <td class="active-month">11</td>
+                            </tr>
+                            <tr class="cal-date">
+                                <td class="active-month">12</td>
+                                <td class="active-month">13</td>
+                                <td class="active-month">14</td>
+                                <td class="active-month">15</td>
+                                <td class="active-month">16</td>
+                                <td class="active-month">17</td>
+                                <td class="active-month">18</td>
+                            </tr>
+                            <tr class="cal-date">
+                                <td class="active-month">19</td>
+                                <td class="active-month">20</td>
+                                <td class="active-month">21</td>
+                                <td class="active-month">22</td>
+                                <td class="active-month">23</td>
+                                <td class="active-month">24</td>
+                                <td class="active-month">25</td>
+                            </tr>
+                            <tr class="cal-date">
+                                <td class="active-month">26</td>
+                                <td class="active-month">27</td>
+                                <td class="active-month">28</td>
+                                <td class="active-month">29</td>
+                                <td class="active-month today selected">30</td>
+                                <td class="inactive-month">1</td>
+                                <td class="inactive-month">2</td>
+                            </tr>
+                            <tr class="cal-date">
+                                <td class="inactive-month">3</td>
+                                <td class="inactive-month">4</td>
+                                <td class="inactive-month">5</td>
+                                <td class="inactive-month">6</td>
+                                <td class="inactive-month">7</td>
+                                <td class="inactive-month">8</td>
+                                <td class="inactive-month">9</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="7">
+                                    Today&nbsp;<span>&nbsp;&nbsp;&nbsp;</span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="content-row margin-top-50">
+
+            <div class="column-05 heigt-300 padding-top-50 border-1 border-box black-border">
+                <div myattr="Hello World">Hello World</div>
+            </div>
+
+            <div class="column-05 heigt-300 padding-top-50 border-1 border-box black-border">
+                <div myattr="Hello Brian">Hello Brian</div>
+            </div>
+
+            <div class="column-05 heigt-300 padding-top-50 border-1 border-box black-border">
+                <div myattr="Hello Honey">Hello Honey</div>
+            </div>
+
+            <div class="column-05 heigt-300 padding-top-50 border-1 border-box black-border">
+                <div myattr="Hello Y'All">Hello Y'All</div>
+            </div>
+
+        </div>
+
+        <div class="content-row margin-top-50">
+
+            <div class="column-20">
+
+                <div class="table">
+
+                    <div class="table-row border-2 border-bottom black-border">
+                        <div class="header-cell">
+                            <div class="center-text middle-align">Col One</div>
+                        </div>
+                        <div class="header-cell">
+                            <div class="center-text middle-align">Col Two</div>
+                        </div>
+                        <div class="header-cell">
+                            <div class="center-text middle-align">Col Three</div>
+                        </div>
+                    </div>
+
+                    <div class="table-row">
+                        <div class="table-cell">
+                            Row One, Col One
+                        </div>
+                        <div class="table-cell">
+                            Row One, Col Two
+                        </div>
+                        <div class="table-cell">
+                            Row One, Col Three
+                        </div>
+                    </div>
+
+                    <div class="table-row">
+                        <div class="table-cell">
+                            Row Two, Col One
+                        </div>
+                        <div class="table-cell">
+                            Row Two, Col Two
+                        </div>
+                        <div class="table-cell">
+                            Row Two, Col Three
+                        </div>
+                    </div>
+
+                    <div class="table-row">
+                        <div class="table-cell">
+                            Row Three, Col One
+                        </div>
+                        <div class="table-cell">
+                            Row Three, Col Two
+                        </div>
+                        <div class="table-cell">
+                            Row Three, Col Three
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="scripts/jquery-2.1.4.js"></script>
+    <script src="scripts/bootstrap.js"></script>
+
+    <script src="scripts/krodzone-layout.0.1.min.js"></script>
+    <script src="scripts/krodspa.0.1.min.js"></script>
+
+    <!--<script src="scripts/typings/krodzone/KrodSpa.js"></script>-->
+    <script src="scripts/typings/krodzone/KrodDom.js"></script>
+    <script src="scripts/typings/krodzone/Krodzone.Controls.js"></script>
+
+    <script src="scripts/krodspa.testing.0.1.js"></script>
+    <script src="scripts/controllers/krodspa.testing.login-controller.0.1.js"></script>
+    <script src="scripts/controllers/krodspa.testing.customer-controller.0.1.js"></script>
+    <script src="scripts/controllers/krodspa.testing.projects-controller.0.1.js"></script>
+
+    <script>
+
+        $$(document).domLoaded(function (ev) {
+            var one = { ID: 1, Name: "One" };
+            var two = { ID: 2, Name: "Two" };
+            var three = { ID: 3, Name: "Three" };
+            var arrayTest = [one, two, three];
+            var index = $$.arrayIndex(arrayTest, { ID: 3, Name: "Three" });
+            var index2 = $.inArray({ ID: 3, Name: "Three" }, arrayTest, 0);
+
+            var firstTest = $$("[myattr=Hello World]");
+            var secondTest = $$("[myattr]");
+            var thirdTest = $$("[myattr=Hello Y'All]");
+
+            setInterval(function () {
+                $$("[myattr=Hello Y'All]").toggle();
+            }, 2000);
+
+            $$("calOne").on("dateselected", function (ev) {
+                var selectedDate = (ev.detail ? new Date(ev.detail.data.Date) : "Invalid");
+                window.status = "calOne: " + Krodzone.KrodzoneDate.toShortDateString(new Date(selectedDate));
+
+            });
+
+            $$("calTwo").on("dateselected", function (ev) {
+                var selectedDate = (ev.detail ? new Date(ev.detail.data.Date) : "Invalid");
+                window.status = "calTwo: " + Krodzone.KrodzoneDate.toShortDateString(new Date(selectedDate));
+            });
+
+            $$("cssTest").html("Hello Brian!");
+            //$$("cssTest").addClass("my-box");
+
+            $$("cssTest").css("width", "200px");
+            $$("cssTest").css("height", "200px");
+            $$("cssTest").css("background-color", "#ffb71d");
+            $$("cssTest").css("border", "1px solid #0051ff");
+            $$("cssTest").css("margin", "auto");
+
+            alert("Height: " + $$(document).height() + "\nWidth: " + $$(document).width());
+
+            //$$("cssTest").css({
+            //    "width": "200px",
+            //    "height": "200px",
+            //    "background-color": "#138f32",
+            //    "border-left": "1px solid #000",
+            //    "margin": "auto"
+            //});
+
+        });
+
+
+        var DataContext = (function () {
+
+            function DataContext(token, baseURL) {
+                var _this = this;
+
+                _this.Token = token;
+                _this.BaseURL = baseURL;
+
+                this.Success = function (funct) {
+                    this.SuccessCallback = funct;
+                    return this;
+                }
+
+                this.Error = function (funct) {
+                    this.ErrorCallback = funct;
+                    return this;
+                }
+
+                this.Send = function (url, model) {
+
+                    $.ajax({
+                        url: url,
+                        async: true,
+                        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                        data: (model ? JSON.stringify(model) : undefined),
+                        success: this.SuccessCallback,
+                        error: this.ErrorCallback
+                    });
+
+                }
+
+            }
+
+            return DataContext;
+
+        })();
+
+    </script>
+
+
+</body>
+</html>

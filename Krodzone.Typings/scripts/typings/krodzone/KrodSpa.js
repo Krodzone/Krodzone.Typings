@@ -24,6 +24,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var _this = this;
 /// <reference path="../jquery/jquery.d.ts" />
+/// <reference path="kroddom.ts" />
 var currentApplication;
 var pageController;
 var currentController;
@@ -377,6 +378,7 @@ var KrodSpa;
                 if (index === -1) {
                     controller = new Controller(name, mod);
                     _this.Controllers.push(controller);
+                    _this.$rootScope[name] = controller;
                 }
                 else {
                     _this.Controllers[index].Name = name;
@@ -438,6 +440,7 @@ var KrodSpa;
             that.DefaultHash = "";
             that.Controllers = new Array();
             that.Settings = new Array();
+            that.$rootScope = new Object();
         }
         Application.Create = function (name) {
             var app;
@@ -748,12 +751,12 @@ var KrodSpa;
             };
             that.SetView = function (view) {
                 that.View = view;
-                var iters = $(that.View).find("[iteration]");
+                var iters = $$(that.View).find("[iteration]");
                 if (iters !== undefined && iters !== null && iters.length !== undefined) {
                     for (var i = 0; i < iters.length; i++) {
                         var iteration;
                         try {
-                            iteration = new Iteration(that.View, iters[i], that.Scope);
+                            iteration = new Iteration(that.View, iters[i].Element, that.Scope);
                         }
                         catch (er) {
                             iteration = undefined;
@@ -846,12 +849,12 @@ var KrodSpa;
                         }
                     }
                     var dialogIterations = new IterationCollection();
-                    var dialogIters = $(view).find("[iteration]");
+                    var dialogIters = $$(view).find("[iteration]");
                     if (dialogIters !== undefined && dialogIters !== null && dialogIters.length !== undefined) {
                         for (var i = 0; i < dialogIters.length; i++) {
                             var iteration;
                             try {
-                                iteration = new Iteration(view, dialogIters[i], that.Scope);
+                                iteration = new Iteration(view, dialogIters[i].Element, that.Scope);
                             }
                             catch (er) {
                                 iteration = undefined;
@@ -882,204 +885,35 @@ var KrodSpa;
     var Iteration = (function () {
         function Iteration(view, element, scope) {
             var _this = this;
-            this.ShowFilterText = "Show Filter";
-            this.HideFilterText = "Hide Filter";
-            this.TotalItems = -1;
             this.IntervalID = -1;
-            var that = this, FilterObj = new KrodSpa.Data.FilterObjectCollection(), Filters = new Array();
-            var getModel = function (modelName) {
+            this.GetModel = function (modelName) {
                 var obj;
-                if (that.Scope !== undefined) {
+                if (_this.Scope !== undefined) {
                     if (modelName.indexOf(".") > -1) {
                         var parts = modelName.split(".");
                         for (var i = 0; i < parts.length; i++) {
-                            obj = obj === undefined ? that.Scope[parts[i]] : obj[parts[i]];
+                            obj = obj === undefined ? _this.Scope[parts[i]] : obj[parts[i]];
                         }
                     }
                     else {
-                        obj = that.Scope[modelName];
+                        obj = _this.Scope[modelName];
                     }
                 }
                 return obj;
             };
-            var createNavigationButton = function (html, clickHandler) {
-                var button = document.createElement("button");
-                $(button).addClass("btn");
-                $(button).addClass("btn-xs");
-                $(button).addClass("btn-default");
-                $(button).css({
-                    "width": "23px",
-                    "height": "23px",
-                    "float": "left",
-                    "margin": "1.5px"
-                });
-                $(button).html(html);
-                button.onclick = clickHandler;
-                return button;
-            };
-            var displayItems = function (items, template) {
-                var totalProcessed = 0;
-                var rgx = /\{\{\w{1,}\}\}/gm;
-                var html = "";
-                var promise = new Promise();
-                promise.then(function (result) {
-                    $(that.Element).html(result !== "" ? result : that.NoItemTemplate);
-                    var clickControls = $(that.Element).find("[click]");
-                    if (that.Scope !== undefined && clickControls !== undefined && clickControls !== null && clickControls.length !== undefined) {
-                        $(clickControls).each(function () {
-                            var paramList = $(this).attr("click").split("(");
-                            var clickCallback = paramList && paramList.length && paramList.length === 2 ? paramList[0] : undefined;
-                            var index = !isNaN(parseInt($(this).attr("index"))) ? parseInt($(this).attr("index")) : -1;
-                            var params = paramList && paramList.length && paramList.length === 2 ? new Object() : undefined;
-                            if (!clickCallback)
-                                return;
-                            if (params) {
-                                var paramItemList = paramList[1].replace(")", "").split(",");
-                                if (paramItemList && paramItemList.length) {
-                                    for (var pilIdx = 0; pilIdx < paramItemList.length; pilIdx++) {
-                                        if (paramItemList[pilIdx].trim().indexOf("$item.") > -1) {
-                                            var fieldName = paramItemList[pilIdx].trim().replace("$item.", "");
-                                            if (fieldName !== "" && that.FilteredItems[index][fieldName]) {
-                                                params[fieldName] = that.FilteredItems[index][fieldName];
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            $(this).on("click", function (ev) {
-                                that.Scope[clickCallback](that.FilteredItems[index], params);
-                            });
-                        });
-                    }
-                });
-                if (items !== undefined && items !== null && items.length !== undefined && promise !== undefined && promise !== null && template.trim() !== "") {
-                    for (var m = 0; m < items.length; m++) {
-                        (function (idx) {
-                            var modelHtml = template.replace('hidden="hidden"', "");
-                            var attributes = modelHtml.match(rgx);
-                            attributes.forEach(function (attr) {
-                                var attrName = attr.replace("{{", "").replace("}}", "").trim();
-                                var attrValue = items[idx][attrName] !== undefined ? removeEscapeChars(items[idx][attrName]) : "";
-                                var attrRgx = new RegExp("\{\{" + attrName + "\}\}", "gm");
-                                modelHtml = modelHtml.replace(attrRgx, attrValue);
-                            });
-                            var div = document.createElement("div");
-                            $(div).html(modelHtml);
-                            var clickControls = $(div).find("[click]");
-                            if (clickControls !== undefined && clickControls !== null && clickControls.length !== undefined) {
-                                $(clickControls).each(function () {
-                                    $(this).attr("index", idx);
-                                });
-                                modelHtml = $(div).html();
-                            }
-                            html += modelHtml;
-                            totalProcessed++;
-                            if (totalProcessed === items.length) {
-                                promise.resolve(html);
-                            }
-                        })(m);
-                    }
+            var that = this, FilterObj = new KrodSpa.Data.FilterObjectCollection(), Filters = new Array(), ButtonCallback = function (templateType, itemIndex) {
+                if (templateType === IterationTemplateType.Desktop) {
+                    that.IterationViews.DesktopView.UpdatePaginationValues(itemIndex);
+                }
+                else {
+                    that.IterationViews.DesktopView.UpdatePaginationValues(itemIndex);
                 }
             };
             that.StartWatch = function () {
                 if (that.Element !== undefined && that.Model !== undefined && that.Model !== null) {
-                    if (that.PaginationCtl !== undefined && that.PageTotal > 0) {
-                        var container = document.createElement("div");
-                        var pageNo = document.createElement("div");
-                        var first = createNavigationButton('<i class="fa fa-angle-double-left" aria-hidden="true"></i>', function (ev) {
-                            if (that.FilteredItems) {
-                                that.PageIndex = 0;
-                                var startIndex = that.PageIndex * that.PageTotal;
-                                var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
-                                displayItems(that.FilteredItems.slice(startIndex, endIndex), that.ModelTemplate);
-                                $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
-                            }
-                        });
-                        var previous = createNavigationButton('<i class="fa fa-angle-left" aria-hidden="true"></i>', function (ev) {
-                            if (that.FilteredItems) {
-                                that.PageIndex = (that.PageIndex - 1) < 0 ? 0 : that.PageIndex - 1;
-                                var startIndex = that.PageIndex * that.PageTotal;
-                                var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
-                                displayItems(that.FilteredItems.slice(startIndex, endIndex), that.ModelTemplate);
-                                $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
-                            }
-                        });
-                        var next = createNavigationButton('<i class="fa fa-angle-right" aria-hidden="true"></i>', function (ev) {
-                            if (that.FilteredItems) {
-                                that.PageIndex = (that.PageIndex + 2) > that.TotalPages ? that.TotalPages - 1 : that.PageIndex + 1;
-                                var startIndex = that.PageIndex * that.PageTotal;
-                                var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
-                                displayItems(that.FilteredItems.slice(startIndex, endIndex), that.ModelTemplate);
-                                $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
-                            }
-                        });
-                        var last = createNavigationButton('<i class="fa fa-angle-double-right" aria-hidden="true"></i>', function (ev) {
-                            if (that.FilteredItems) {
-                                that.PageIndex = that.TotalPages - 1;
-                                var startIndex = that.PageIndex * that.PageTotal;
-                                var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
-                                displayItems(that.FilteredItems.slice(startIndex, endIndex), that.ModelTemplate);
-                                $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
-                            }
-                        });
-                        $(pageNo).css({
-                            "font-family": "'Lucida Sans Unicode', Arial, Helvetica, sans-serif",
-                            "color": "#333",
-                            "-webkit-border-radius": "3px",
-                            "-moz-border-radius": "3px",
-                            "-ms-border-radius": "3px",
-                            "border-radius": "3px",
-                            "border": "1px solid #666",
-                            "float": "left",
-                            "margin": "1.5px",
-                            "font-size": "0.85em",
-                            "text-align": "center",
-                            "min-width": "150px",
-                            "height": "23px",
-                            "padding-top": "2px",
-                            "font-weight": "bold"
-                        });
-                        $(pageNo).attr("pagination-display", "true");
-                        $(container).css({
-                            "display": "inline-table",
-                            "height": "35px"
-                        });
-                        $(container).append(first);
-                        $(container).append(previous);
-                        $(container).append(pageNo);
-                        $(container).append(next);
-                        $(container).append(last);
-                        $(_this.PaginationCtl).empty();
-                        $(_this.PaginationCtl).append(container);
-                    }
-                    that.IntervalID = setInterval(function (iter) {
-                        if (iter.FilteredItems !== undefined && iter.FilteredItems !== null && iter.FilteredItems.length !== undefined && iter.FilteredItems.length > 0) {
-                            if (iter.FilteredItems.length !== iter.TotalItems) {
-                                iter.TotalItems = iter.FilteredItems.length;
-                                var rgx = /\{\{\w{1,}\}\}/gm;
-                                if (iter.PaginationCtl !== undefined && iter.PageTotal > 0) {
-                                    iter.TotalPages = iter.PageTotal > 0 && iter.FilteredItems !== undefined && iter.FilteredItems !== null && iter.FilteredItems.length !== undefined ? Math.ceil(iter.FilteredItems.length / iter.PageTotal) : 1;
-                                    iter.PageIndex = (iter.PageIndex + 1) > iter.TotalPages ? iter.TotalPages - 1 : iter.PageIndex;
-                                    var startIndex = iter.PageIndex * iter.PageTotal;
-                                    var endIndex = (startIndex + iter.PageTotal) > iter.FilteredItems.length ? iter.FilteredItems.length : (startIndex + iter.PageTotal);
-                                    displayItems(iter.FilteredItems.slice(startIndex, endIndex), iter.ModelTemplate);
-                                    $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
-                                }
-                                else {
-                                    displayItems(iter.FilteredItems, iter.ModelTemplate);
-                                }
-                            }
-                        }
-                        else {
-                            iter.TotalItems = 0;
-                            if (iter.NoItemTemplate !== undefined) {
-                                $(iter.Element).html(iter.NoItemTemplate.replace('hidden="hidden"', ""));
-                            }
-                            else {
-                                $(iter.Element).html("<h4>No Data</h4>");
-                            }
-                        }
-                    }, 500, _this);
+                    that.IntervalID = setInterval(function (iterVw) {
+                        iterVw.UpdateView();
+                    }, 500, that.SelectedView);
                 }
             };
             that.EndWatch = function () {
@@ -1087,129 +921,85 @@ var KrodSpa;
             };
             that.Refresh = function () {
                 if (that.Model && FilterObj) {
-                    that.FilteredItems = that.Model.filter(FilterObj.MeetsCriteria);
-                    if (that.FilteredItems) {
-                        that.TotalItems = (that.FilteredItems !== undefined ? that.FilteredItems.length : 0);
-                        that.TotalPages = Math.ceil((that.FilteredItems !== undefined ? that.FilteredItems.length : 0) / (that.PageTotal ? (that.PageTotal > 0 ? that.PageTotal : 5) : 5));
-                        that.PageIndex = that.PageIndex > that.TotalPages ? 0 : that.PageIndex;
-                        var startIndex = that.PageIndex * that.PageTotal;
-                        var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
-                        displayItems(that.FilteredItems.slice(startIndex, endIndex), that.ModelTemplate);
-                        if (that.PaginationCtl) {
-                            $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
-                        }
-                    }
+                    that.SelectedView.UpdateDisplay();
                 }
             };
             that.Element = element;
             that.Scope = scope;
-            that.ModelTemplate = that.Element && $(that.Element).find('[template-type="data"]') && $(that.Element).find('[template-type="data"]').length > 0 ? $(that.Element).find('[template-type="data"]')[0].outerHTML : undefined;
-            that.LoadingTemplate = that.Element && $(that.Element).find('[template-type="dataloading"]') && $(that.Element).find('[template-type="dataloading"]').length > 0 ? $(that.Element).find('[template-type="dataloading"]')[0].outerHTML : '<i class="fa fa-refresh fa-spin fa-fw"></i><span class="sr-only">Loading Data...</span>';
-            that.NoItemTemplate = that.Element && $(that.Element).find('[template-type="nodata"]') && $(that.Element).find('[template-type="nodata"]').length > 0 ? $(that.Element).find('[template-type="nodata"]')[0].outerHTML : undefined;
-            that.PageIndex = 0;
+            that.IterationViews = new IterationViewCollection();
             if (that.Element) {
-                var iterationValue = $(that.Element).attr("iteration");
-                var toggleValue = $(that.Element).attr("filter-toggle");
-                if (iterationValue) {
-                    var iterationParts = iterationValue.split(";");
-                    for (var i = 0; i < iterationParts.length; i++) {
-                        var parts = iterationParts[i].trim().split(":");
-                        if (parts && parts.length && parts.length === 2) {
-                            switch (parts[0].trim().toUpperCase()) {
-                                case "MODEL":
-                                    that.Model = getModel(parts[1].trim());
-                                    that.FilteredItems = that.Model && that.Model.length ? that.Model.slice(0, that.Model.length) : undefined;
-                                    that.TotalPages = that.PageTotal > 0 && that.FilteredItems !== undefined && that.FilteredItems !== null && that.FilteredItems.length !== undefined ? Math.ceil(that.FilteredItems.length / that.PageTotal) : 1;
-                                    if (!that.Model && !that.FilteredItems)
-                                        return;
-                                    break;
-                                case "PAGINATIONID":
-                                    that.PaginationCtl = $(view).find("#" + parts[1].trim()) !== undefined && $(view).find("#" + parts[1].trim()).length > 0 ? $(view).find("#" + parts[1].trim())[0] : undefined;
-                                    break;
-                                case "PAGETOTAL":
-                                    that.PageTotal = !isNaN(parseInt(parts[1].trim())) ? parseInt(parts[1].trim()) : -1;
-                                    that.TotalPages = that.PageTotal > 0 && that.FilteredItems !== undefined && that.FilteredItems !== null && that.FilteredItems.length !== undefined ? Math.ceil(that.FilteredItems.length / that.PageTotal) : 1;
-                                    break;
-                                case "FILTER":
-                                    var filterParts = parts[1].trim().split(",");
-                                    if (filterParts && filterParts.length) {
-                                        filterParts.forEach(function (fp) {
-                                            var fParts = fp.trim().split("=");
-                                            if (fParts && fParts.length && fParts.length === 2) {
-                                                var ctl = $(view).find("#" + fParts[1].trim()) !== undefined && $(view).find("#" + fParts[1].trim()).length > 0 ? $(view).find("#" + fParts[1].trim())[0] : undefined;
-                                                Filters.push(new FilterAttribute(fParts[0].trim(), ctl));
-                                            }
-                                        });
-                                    }
-                                    break;
-                            }
+                var iterationAttr = $$(that.Element).attrKVP("iteration");
+                that.Model = that.GetModel((iterationAttr["MODEL"] ? iterationAttr["MODEL"] : ""));
+                if (!that.Model)
+                    return;
+                var template = $$(that.Element).find("[template]");
+                template.each(function (itm) {
+                    var templateAttr = $$(itm).attrKVP("template");
+                    if (templateAttr["TYPE"]) {
+                        var iterationView = new IterationView(itm["Element"], that.Scope, that.Model, Filters, ButtonCallback);
+                        switch (templateAttr["TYPE"].toUpperCase()) {
+                            case "DESKTOP":
+                                that.IterationViews.Add(IterationTemplateType.Desktop, iterationView);
+                                break;
+                            default:
+                                that.IterationViews.Add(IterationTemplateType.Mobile, iterationView);
                         }
-                    }
-                }
-                if (toggleValue) {
-                    var toggleParts = toggleValue.split(";");
-                    for (var i = 0; i < toggleParts.length; i++) {
-                        var parts = toggleParts[i].trim().split(":");
-                        if (parts && parts.length && parts.length === 2) {
-                            switch (parts[0].trim().toUpperCase()) {
-                                case "TOGGLEID":
-                                    that.FilterToggle = $(view).find("#" + parts[1].trim()) !== undefined && $(view).find("#" + parts[1].trim()).length > 0 ? $(view).find("#" + parts[1].trim())[0] : undefined;
-                                    break;
-                                case "CONTAINERID":
-                                    that.FilterContainer = $(view).find("#" + parts[1].trim()) !== undefined && $(view).find("#" + parts[1].trim()).length > 0 ? $(view).find("#" + parts[1].trim())[0] : undefined;
-                                    break;
-                                case "SHOWTEXT":
-                                    that.ShowFilterText = parts[1].trim();
-                                    break;
-                                case "HIDETEXT":
-                                    that.HideFilterText = parts[1].trim();
-                                    break;
-                            }
-                        }
-                    }
-                }
-                $(that.Element).empty();
-                $(that.Element).html(that.LoadingTemplate);
-            }
-            if (that.FilterToggle && that.FilterContainer) {
-                $(that.FilterToggle).html(that.ShowFilterText);
-                $(that.FilterContainer).hide();
-                $(that.FilterToggle).on("click", function (ev) {
-                    $(that.FilterContainer).toggle();
-                    if ($(that.FilterContainer).is(':visible')) {
-                        $(that.FilterToggle).html(that.HideFilterText);
-                    }
-                    else {
-                        $(that.FilterToggle).html(that.ShowFilterText);
                     }
                 });
-            }
-            Filters.forEach(function (filter) {
-                var inputControl = filter.Control instanceof HTMLInputElement ? filter.Control : undefined;
-                if (inputControl !== undefined && inputControl.tagName.toUpperCase() === "INPUT" && inputControl.type.toUpperCase() !== "CHECKBOX") {
-                    $(filter.Control).on("keyup", function (ev) {
-                        FilterObj.Add(filter.Attribute, $(this).val(), 5);
-                        that.FilteredItems = that.Model.filter(FilterObj.MeetsCriteria);
-                        if (that.FilteredItems) {
-                            that.PageIndex = 0;
-                            that.TotalItems = (that.FilteredItems !== undefined ? that.FilteredItems.length : 0);
-                            that.TotalPages = Math.ceil((that.FilteredItems !== undefined ? that.FilteredItems.length : 0) / (that.PageTotal ? (that.PageTotal > 0 ? that.PageTotal : 5) : 5));
-                            var startIndex = that.PageIndex * that.PageTotal;
-                            var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
-                            displayItems(that.FilteredItems.slice(startIndex, endIndex), that.ModelTemplate);
-                            if (that.PaginationCtl) {
-                                $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
+                $$(that.IterationViews.DesktopView.MainElement).hide();
+                $$(that.IterationViews.MobileView.MainElement).hide();
+                var documentWidth = $$(document).width();
+                if (documentWidth >= 500) {
+                    $$(that.IterationViews.DesktopView.MainElement).show();
+                    that.SelectedView = that.IterationViews.DesktopView;
+                }
+                else {
+                    $$(that.IterationViews.MobileView.MainElement).show();
+                    that.SelectedView = that.IterationViews.MobileView;
+                }
+                window.addEventListener("resize", function (ev) {
+                    setTimeout(function () {
+                        var docWd = $$(document).width();
+                        if (docWd >= 500) {
+                            if (!$$(that.IterationViews.DesktopView.MainElement).visible()) {
+                                $$(that.IterationViews.MobileView.MainElement).hide();
+                                $$(that.IterationViews.DesktopView.MainElement).show();
+                                that.SelectedView = that.IterationViews.DesktopView;
+                                that.SelectedView.UpdateView();
                             }
                         }
-                    });
-                }
-            });
+                        else {
+                            if (!$$(that.IterationViews.MobileView.MainElement).visible()) {
+                                $$(that.IterationViews.DesktopView.MainElement).hide();
+                                $$(that.IterationViews.MobileView.MainElement).show();
+                                that.SelectedView = that.IterationViews.MobileView;
+                                that.SelectedView.UpdateView();
+                            }
+                        }
+                    }, 100);
+                });
+            }
+            setTimeout(function () {
+                Filters.forEach(function (filter) {
+                    var inputControl = filter.Control instanceof HTMLInputElement ? filter.Control : undefined;
+                    if (inputControl !== undefined && inputControl.tagName.toUpperCase() === "INPUT" && inputControl.type.toUpperCase() !== "CHECKBOX") {
+                        $(filter.Control).on("keyup", function (ev) {
+                            FilterObj.Add(filter.Attribute, $(this).val(), 5);
+                            that.FilteredItems = that.Model.filter(FilterObj.MeetsCriteria);
+                            if (that.FilteredItems) {
+                                that.SelectedView.UpdateView(that.FilteredItems);
+                            }
+                        });
+                    }
+                });
+            }, 500);
             var modelTotal = that.Model && that.Model.length ? that.Model.length : 0;
             setInterval(function () {
                 if (that.Model && that.Model.length) {
                     if (that.Model.length !== modelTotal) {
                         modelTotal = that.Model.length;
                         that.FilteredItems = that.Model.filter(FilterObj.MeetsCriteria);
+                        that.SelectedView.UpdateView();
                     }
                 }
                 else {
@@ -1220,7 +1010,475 @@ var KrodSpa;
         }
         return Iteration;
     }());
-    KrodSpa.Iteration = Iteration;
+    (function (IterationTemplateType) {
+        IterationTemplateType[IterationTemplateType["Desktop"] = 1] = "Desktop";
+        IterationTemplateType[IterationTemplateType["Mobile"] = 2] = "Mobile";
+    })(KrodSpa.IterationTemplateType || (KrodSpa.IterationTemplateType = {}));
+    var IterationTemplateType = KrodSpa.IterationTemplateType;
+    var IterationViewCollection = (function () {
+        function IterationViewCollection() {
+            var _this = this;
+            var that = this;
+            that._iterationViews = new Array();
+            that._iterationViews.push(undefined);
+            that._iterationViews.push(undefined);
+            that.Add = function (templateType, view) {
+                if (templateType) {
+                    if (templateType === IterationTemplateType.Desktop) {
+                        _this._iterationViews[0] = (view ? view : undefined);
+                    }
+                    else {
+                        _this._iterationViews[1] = (view ? view : undefined);
+                    }
+                }
+            };
+        }
+        Object.defineProperty(IterationViewCollection.prototype, "DesktopView", {
+            get: function () {
+                return (!this._iterationViews[0] ? this._iterationViews[0] : (!this._iterationViews[1] ? this._iterationViews[1] : this._iterationViews[0]));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(IterationViewCollection.prototype, "MobileView", {
+            get: function () {
+                return (!this._iterationViews[1] ? this._iterationViews[1] : (!this._iterationViews[0] ? this._iterationViews[0] : this._iterationViews[1]));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return IterationViewCollection;
+    }());
+    /*
+        The HTML Template Displayed in the UI.
+
+            There can be only 2: (Desktop | Mobile)
+            The default template is desktop
+     */
+    var IterationView = (function () {
+        function IterationView(element, scope, filteredItems, filters, buttonCallback) {
+            var _this = this;
+            this.TemplateType = IterationTemplateType.Desktop;
+            this.PageTotal = 15;
+            this.ShowFilterText = 'Show Filter <i class="fa fa- chevron - down" aria-hidden="true"></i>';
+            this.HideFilterText = 'Hide Filter <i class="fa fa-chevron-up" aria-hidden="true"></i>';
+            this.TotalItems = -1;
+            this.IntervalID = -1;
+            this.UpdateDisplay = function () {
+                if (_this.FilteredItems !== undefined && _this.FilteredItems !== null && _this.FilteredItems.length !== undefined && _this.FilteredItems.length > 0) {
+                    var rgx = /\{\{\w{1,}\}\}/gm;
+                    if (_this.PaginationCtl !== undefined && _this.PageTotal > 0) {
+                        _this.TotalPages = _this.PageTotal > 0 && _this.FilteredItems !== undefined && _this.FilteredItems !== null && _this.FilteredItems.length !== undefined ? Math.ceil(_this.FilteredItems.length / _this.PageTotal) : 1;
+                        _this.PageIndex = (_this.PageIndex + 1) > _this.TotalPages ? _this.TotalPages - 1 : _this.PageIndex;
+                        var startIndex = _this.PageIndex * _this.PageTotal;
+                        var endIndex = (startIndex + _this.PageTotal) > _this.FilteredItems.length ? _this.FilteredItems.length : (startIndex + _this.PageTotal);
+                        _this.DisplayItems(_this.FilteredItems.slice(startIndex, endIndex));
+                        $(_this.PaginationCtl).find('[pagination-display="true"]').html("Page " + (_this.PageIndex + 1) + " of " + _this.TotalPages);
+                    }
+                    else {
+                        _this.DisplayItems(_this.FilteredItems);
+                    }
+                }
+            };
+            this.DisplayItems = function (items) {
+                var totalProcessed = 0;
+                var rgx = /\{\{\w{1,}\}\}/gm;
+                var html = "";
+                var promise = new Promise();
+                var template = _this.ModelTemplate.toString();
+                promise.then(function (result) {
+                    $$(result.View.TemplateContainer).html(result.HTML !== "" ? result.HTML : result.View.NoItemTemplate);
+                    var clickControls = $$(result.View.TemplateContainer).find("[click]");
+                    if (result.View.Scope !== undefined && clickControls !== undefined && clickControls !== null && clickControls.length !== undefined) {
+                        $$(clickControls).each(function (ctl) {
+                            var paramList = $$(ctl).attr("click").toString().split("(");
+                            var clickCallback = paramList && paramList.length && paramList.length === 2 ? paramList[0] : undefined;
+                            var index = !isNaN(parseInt($$(ctl).attr("index"))) ? parseInt($$(ctl).attr("index").toString()) : -1;
+                            var params = paramList && paramList.length && paramList.length === 2 ? new Object() : undefined;
+                            if (!clickCallback)
+                                return;
+                            if (params && index > -1) {
+                                var paramItemList = paramList[1].replace(")", "").split(",");
+                                params["Refresh"] = result.View.UpdateDisplay;
+                                if (paramItemList && paramItemList.length) {
+                                    for (var pilIdx = 0; pilIdx < paramItemList.length; pilIdx++) {
+                                        if (paramItemList[pilIdx].trim().indexOf("$item.") > -1) {
+                                            var fieldName = paramItemList[pilIdx].trim().replace("$item.", "");
+                                            if (fieldName !== "" && result.View.FilteredItems[index][fieldName]) {
+                                                params[fieldName] = result.View.FilteredItems[index][fieldName];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            $$(ctl).on("click", function (ev) {
+                                result.View.Scope[clickCallback](result.View.FilteredItems[index], params);
+                            });
+                        });
+                    }
+                });
+                if (items !== undefined && items !== null && items.length !== undefined && promise !== undefined && promise !== null && template.trim() !== "") {
+                    for (var m = 0; m < items.length; m++) {
+                        (function (idx, iter) {
+                            var modelHtml = template.replace('hidden="hidden"', "");
+                            var attributes = modelHtml.match(rgx);
+                            var offset = iter.PageIndex * iter.PageTotal;
+                            attributes.forEach(function (attr) {
+                                var attrName = attr.replace("{{", "").replace("}}", "").trim();
+                                var attrValue = items[idx][attrName] !== undefined ? removeEscapeChars(items[idx][attrName]) : "";
+                                var attrRgx = new RegExp("\{\{" + attrName + "\}\}", "gm");
+                                modelHtml = modelHtml.replace(attrRgx, attrValue);
+                            });
+                            var div = document.createElement(iter.TemplateContainer.nodeName);
+                            $$(div).html(modelHtml);
+                            var clickControls = $$(div).find("[click]");
+                            if (clickControls !== undefined && clickControls !== null && clickControls.length !== undefined) {
+                                $$(clickControls).each(function (ctl) {
+                                    $$(ctl).attr("index", (idx + offset));
+                                });
+                                modelHtml = $$(div).html();
+                            }
+                            html += modelHtml;
+                            totalProcessed++;
+                            if (totalProcessed === items.length) {
+                                var promiseResult = { View: iter, HTML: html };
+                                promise.resolve(promiseResult);
+                            }
+                        })(m, _this);
+                    }
+                }
+            };
+            this.CreateNavigationButton = function (html, clickHandler) {
+                var button = document.createElement("button");
+                $$(button).addClass("btn");
+                $$(button).addClass("btn-default");
+                if (_this.TemplateType === IterationTemplateType.Desktop) {
+                    $$(button).addClass("btn-xs");
+                    $$(button).css({
+                        "width": "23px",
+                        "height": "23px",
+                        "float": "left",
+                        "margin": "1.5px"
+                    });
+                }
+                else {
+                    $$(button).addClass("btn-sm");
+                    $$(button).css({
+                        "width": "30px",
+                        "height": "30px",
+                        "float": "left",
+                        "margin": "1.5px"
+                    });
+                }
+                $$(button).html(html);
+                button.onclick = clickHandler;
+                return button;
+            };
+            var that = this;
+            that.First = function (ev) {
+                if (that.FilteredItems) {
+                    that.PageIndex = 0;
+                    var startIndex = that.PageIndex * that.PageTotal;
+                    var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
+                    that.DisplayItems(that.FilteredItems.slice(startIndex, endIndex));
+                    $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
+                    if (buttonCallback) {
+                        buttonCallback(that.TemplateType, startIndex);
+                    }
+                }
+            };
+            that.Previous = function (ev) {
+                if (that.FilteredItems) {
+                    that.PageIndex = (that.PageIndex - 1) < 0 ? 0 : that.PageIndex - 1;
+                    var startIndex = that.PageIndex * that.PageTotal;
+                    var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
+                    that.DisplayItems(that.FilteredItems.slice(startIndex, endIndex));
+                    $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
+                    if (buttonCallback) {
+                        buttonCallback(that.TemplateType, startIndex);
+                    }
+                }
+            };
+            that.Next = function (ev) {
+                if (that.FilteredItems) {
+                    that.PageIndex = (that.PageIndex + 2) > that.TotalPages ? that.TotalPages - 1 : that.PageIndex + 1;
+                    var startIndex = that.PageIndex * that.PageTotal;
+                    var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
+                    that.DisplayItems(that.FilteredItems.slice(startIndex, endIndex));
+                    $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
+                    if (buttonCallback) {
+                        buttonCallback(that.TemplateType, startIndex);
+                    }
+                }
+            };
+            that.Last = function (ev) {
+                if (that.FilteredItems) {
+                    that.PageIndex = that.TotalPages - 1;
+                    var startIndex = that.PageIndex * that.PageTotal;
+                    var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
+                    that.DisplayItems(that.FilteredItems.slice(startIndex, endIndex));
+                    $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
+                    if (buttonCallback) {
+                        buttonCallback(that.TemplateType, startIndex);
+                    }
+                }
+            };
+            that.MainElement = element;
+            that.Scope = scope;
+            that.FilteredItems = filteredItems;
+            that.UpdateView = function (filteredItems) {
+                that.FilteredItems = (filteredItems ? filteredItems : that.FilteredItems);
+                if (that.FilteredItems !== undefined && that.FilteredItems !== null && that.FilteredItems.length !== undefined && that.FilteredItems.length > 0) {
+                    if (that.FilteredItems.length !== that.TotalItems) {
+                        that.TotalItems = that.FilteredItems.length;
+                        var rgx = /\{\{\w{1,}\}\}/gm;
+                        if (that.PaginationCtl !== undefined && that.PageTotal > 0) {
+                            that.TotalPages = that.PageTotal > 0 && that.FilteredItems !== undefined && that.FilteredItems !== null && that.FilteredItems.length !== undefined ? Math.ceil(that.FilteredItems.length / that.PageTotal) : 1;
+                            that.PageIndex = (that.PageIndex + 1) > that.TotalPages ? that.TotalPages - 1 : that.PageIndex;
+                            var startIndex = that.PageIndex * that.PageTotal;
+                            var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
+                            that.DisplayItems(that.FilteredItems.slice(startIndex, endIndex));
+                            $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
+                        }
+                        else {
+                            that.DisplayItems(that.FilteredItems);
+                        }
+                    }
+                }
+                else {
+                    that.TotalItems = 0;
+                    if (that.NoItemTemplate !== undefined) {
+                        $(that.TemplateContainer).html(that.NoItemTemplate.replace('hidden="hidden"', ""));
+                    }
+                    else {
+                        $(that.TemplateContainer).html("<h4>No Data</h4>");
+                    }
+                }
+            };
+            that.UpdatePaginationValues = function (itemIndex) {
+            };
+            if (that.MainElement) {
+                var promise = new Promise();
+                promise.then(function (result) {
+                    if ($$("").isString(result)) {
+                        $$(that.MainElement).html(result);
+                    }
+                    that.InitializeView(filters);
+                    //  Get the Model, Loading, and No Data Templates to be Displayed
+                    that.ModelTemplate = that.GetHtmlTemplate("data", undefined);
+                    that.LoadingTemplate = that.GetHtmlTemplate("dataloading", '<i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;&nbsp;<span>Loading Data...</span>');
+                    that.NoItemTemplate = that.GetHtmlTemplate("nodata", undefined);
+                    that.PageIndex = 0;
+                    if (that.TemplateContainer) {
+                        $$(that.TemplateContainer).clear();
+                        $$(that.TemplateContainer).html(that.LoadingTemplate);
+                    }
+                    //  Create the Pagination Controls & Add the Appropriate Event Handlers
+                    if (that.PaginationCtl) {
+                        that.InitializePagination(buttonCallback);
+                    }
+                    //  Setup Event Handler for Showing/Hiding Filter & Display Filter Text
+                    if (that.FilterToggle && that.FilterContainer) {
+                        $$(that.FilterToggle).html(that.ShowFilterText);
+                        $$(that.FilterContainer).hide();
+                        $$(that.FilterToggle).on("click", function (ev) {
+                            $$(that.FilterContainer).toggle();
+                            if ($$(that.FilterContainer).visible()) {
+                                $$(that.FilterToggle).html(that.HideFilterText);
+                            }
+                            else {
+                                $$(that.FilterToggle).html(that.ShowFilterText);
+                            }
+                        });
+                    }
+                });
+                that.LoadTemplate(promise);
+            }
+            else {
+                that.MainElement = document.createElement("div");
+                $$(that.MainElement).html("<h4>Invalid Iteration Template</h4>");
+            }
+        }
+        Object.defineProperty(IterationView.prototype, "width", {
+            get: function () {
+                if (this.MainElement) {
+                    return $$(this.MainElement).width();
+                }
+                else {
+                    return 0;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        IterationView.prototype.LoadTemplate = function (promise) {
+            var templateAttr = $$(this.MainElement).attrKVP("template");
+            if (promise) {
+                //  Get the Template Source
+                if (templateAttr['SRC']) {
+                    var templateSrc = window.location.getAbsolutePath() + templateAttr['SRC'];
+                    KrodSpa.Data.WebQuery.load(templateSrc, false).then(function (result) {
+                        promise.resolve(result);
+                    });
+                }
+                else {
+                    promise.resolve(this);
+                }
+            }
+        };
+        IterationView.prototype.InitializeView = function (filters) {
+            var templateAttr = $$(this.MainElement).attrKVP("template");
+            var paginationAttr = $$(this.MainElement).attrKVP("pagination");
+            var filterAttr = $$(this.MainElement).attrKVP("filter");
+            var cont = undefined;
+            //  Get the Template Container
+            if (templateAttr['CONTAINERID']) {
+                cont = $$(this.MainElement).find("#" + templateAttr['CONTAINERID']);
+                this.TemplateContainer = (cont.length > 0 ? cont[0].Element : undefined);
+            }
+            //  Get the Template Type
+            if (templateAttr['TYPE']) {
+                this.TemplateType = (templateAttr['TYPE'].toUpperCase() === "MOBILE" ? IterationTemplateType.Mobile : IterationTemplateType.Desktop);
+            }
+            if (this.TemplateContainer) {
+                //  Get the Pagination Container Element
+                if (paginationAttr['CONTAINERID']) {
+                    cont = $$(this.MainElement).find("#" + paginationAttr['CONTAINERID']);
+                    this.PaginationCtl = (cont.length > 0 ? cont[0].Element : undefined);
+                }
+                //  Get the Total Items to Display Per Page
+                if (paginationAttr['PAGETOTAL'] && !isNaN(paginationAttr['PAGETOTAL'])) {
+                    this.PageTotal = paginationAttr['PAGETOTAL'];
+                }
+                else {
+                    this.PageTotal = (this.TemplateType === IterationTemplateType.Mobile ? 1 : this.PageTotal);
+                }
+                //  Get the Text to Display for Showing the Filter
+                if (filterAttr['SHOWTEXT']) {
+                    this.ShowFilterText = filterAttr['SHOWTEXT'];
+                }
+                //  Get the Text to Display for Hiding the Filter
+                if (filterAttr['HIDETEXT']) {
+                    this.HideFilterText = filterAttr['HIDETEXT'];
+                }
+                //  Get the Filter Toggle Attributes
+                if (filterAttr['TOGGLE']) {
+                    var toggleVals = filterAttr['TOGGLE'].split(",");
+                    for (var i = 0; i < toggleVals.length; i++) {
+                        var toggleParts = toggleVals[i].trim().split("=");
+                        if (toggleParts.length === 2) {
+                            switch (toggleParts[0].trim().toUpperCase()) {
+                                case "TOGGLEID":
+                                    cont = $$(this.MainElement).find("#" + toggleParts[1].trim());
+                                    this.FilterToggle = (cont.length > 0 ? cont[0].Element : undefined);
+                                    break;
+                                case "CONTAINERID":
+                                    cont = $$(this.MainElement).find("#" + toggleParts[1].trim());
+                                    this.FilterContainer = (cont.length > 0 ? cont[0].Element : undefined);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                //  Get the Filter Field Attributes
+                if (filterAttr['FIELDS']) {
+                    var filterVals = filterAttr['FIELDS'].split(",");
+                    for (var i = 0; i < filterVals.length; i++) {
+                        var filterParts = filterVals[i].trim().split("=");
+                        if (filterParts.length === 2) {
+                            cont = $$(this.MainElement).find("#" + filterParts[1].trim());
+                            if (cont.length > 0)
+                                filters.push(new FilterAttribute(filterParts[0].trim(), cont[0].Element));
+                        }
+                    }
+                }
+            }
+            else {
+                this.MainElement = document.createElement("div");
+                $$(this.MainElement).html("<h4>Invalid Iteration Template</h4>");
+            }
+        };
+        IterationView.prototype.InitializePagination = function (callback) {
+            var container = document.createElement("div");
+            var first = this.CreateNavigationButton('<i class="fa fa-angle-double-left" aria-hidden="true"></i>', this.First);
+            var previous = this.CreateNavigationButton('<i class="fa fa-angle-left" aria-hidden="true"></i>', this.Previous);
+            var next = this.CreateNavigationButton('<i class="fa fa-angle-right" aria-hidden="true"></i>', this.Next);
+            var last = this.CreateNavigationButton('<i class="fa fa-angle-double-right" aria-hidden="true"></i>', this.Last);
+            this.PaginationDisplay = document.createElement("div");
+            $$(this.PaginationDisplay).css({
+                "font-family": "'Lucida Sans Unicode', Arial, Helvetica, sans-serif",
+                "color": "#333",
+                "-webkit-border-radius": "3px",
+                "-moz-border-radius": "3px",
+                "-ms-border-radius": "3px",
+                "border-radius": "3px",
+                "border": "1px solid #666",
+                "float": "left",
+                "margin": "1.5px",
+                "font-size": "0.85em",
+                "text-align": "center",
+                "min-width": "150px",
+                "height": "23px",
+                "padding-top": "2px",
+                "font-weight": "bold"
+            });
+            $$(this.PaginationDisplay).attr("pagination-display", "true");
+            if (this.TemplateType === IterationTemplateType.Desktop) {
+                $$(container).css({
+                    "display": "inline-table",
+                    "height": "35px"
+                });
+                $$(container).append(first);
+                $$(container).append(previous);
+                $$(container).append(this.PaginationDisplay);
+                $$(container).append(next);
+                $$(container).append(last);
+            }
+            else {
+                var buttonRow = document.createElement("div");
+                var pageNoRow = document.createElement("div");
+                $$(this.PaginationDisplay).css({
+                    "width": "125px",
+                    "min-width": "125px",
+                    "max-width": "125px",
+                    "float": "left",
+                    "margin": "1.5px"
+                });
+                $$(pageNoRow).css({
+                    "display": "inline-table",
+                    "height": "35px",
+                    "width": "100%"
+                });
+                $$(buttonRow).css({
+                    "display": "inline-table",
+                    "height": "35px",
+                    "width": "100%"
+                });
+                $$(pageNoRow).append(this.PaginationDisplay);
+                $$(buttonRow).append(first);
+                $$(buttonRow).append(previous);
+                $$(buttonRow).append(next);
+                $$(buttonRow).append(last);
+                $$(container).css({
+                    "display": "inline-block",
+                    "height": "70px"
+                });
+                $$(container).append(pageNoRow);
+                $$(container).append(buttonRow);
+            }
+            $$(this.PaginationCtl).append(container);
+        };
+        IterationView.prototype.GetHtmlTemplate = function (templateType, defaultValue) {
+            var cont = $$(this.TemplateContainer).find("[template-type=" + templateType + "]");
+            return (cont.length > 0 ? cont.body() : defaultValue);
+        };
+        IterationView.prototype.Sleep = function (milliseconds) {
+            for (var i = 0; i < milliseconds; i++) {
+                console.count();
+            }
+        };
+        return IterationView;
+    }());
     var IterationCollection = (function () {
         function IterationCollection() {
             var that = this;
@@ -2701,10 +2959,16 @@ var KrodSpa;
                         //  Center the Modal Window
                         left = ((body.clientWidth - width) / 2);
                     }
+                    if (width > window.innerWidth) {
+                        width = Math.ceil(window.innerWidth * .95);
+                        left = Math.ceil((window.innerWidth - width) / 2);
+                        $$(modal.ModalContainer).removeClass(modal.ModalArgs.ModalWidth);
+                        $$(modal.ModalContainer).find(".form-control").addClass("form-control-inline");
+                    }
                 }
                 catch (e) {
-                    width = (body.clientWidth * .80);
-                    left = ((body.clientWidth - width) / 2);
+                    width = (window.innerWidth * .95);
+                    left = ((window.innerWidth - width) / 2);
                 }
                 //  Set the absolute width of the Modal Window
                 modal.ModalContainer.style.width = width + "px";
@@ -2832,10 +3096,20 @@ var KrodSpa;
                         //  Center the Modal Window
                         left = ((body.clientWidth - width) / 2);
                     }
+                    if (width > window.innerWidth) {
+                        width = Math.ceil(window.innerWidth * .95);
+                        left = Math.ceil((window.innerWidth - width) / 2);
+                        $$(modal.ModalContainer).removeClass(modal.ModalArgs.ModalWidth);
+                        $$(modal.ModalContainer).find(".form-control").addClass("form-control-inline");
+                        document.documentElement.scrollLeft = 0;
+                    }
                 }
                 catch (e) {
-                    width = (body.clientWidth * .80);
-                    left = ((body.clientWidth - width) / 2);
+                    width = Math.ceil(window.innerWidth * .95);
+                    left = Math.ceil((window.innerWidth - width) / 2);
+                    $$(modal.ModalContainer).removeClass(modal.ModalArgs.ModalWidth);
+                    $$(modal.ModalContainer).find(".form-control").addClass("form-control-inline");
+                    document.documentElement.scrollLeft = 0;
                 }
                 //  Set the absolute width of the Modal Window
                 modal.ModalContainer.style.width = width + "px";

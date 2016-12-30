@@ -1,0 +1,53 @@
+﻿<div class="col-md-12">
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr style="border: none;">
+                <td colspan="7">
+                    <span class="pull-right">
+                        <a id="projFilterToggle" class="show-pointer"></a>
+                    </span>
+                </td>
+            </tr>
+            <tr id="projFilterContainer" filter-container style="border: none;">
+                <td colspan="4">
+                    <input id="projectNameFilter" type="text" class="form-control" placeholder="Filter: Project Name" />
+                </td>
+                <td colspan="4">
+                    <input id="projectStatusFilter" type="text" class="form-control" placeholder="Filter: Project Status" />
+                </td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Name</th>
+                <th>Est Hrs</th>
+                <th>Cmp Hrs</th>
+                <th>Rem Hrs</th>
+                <th>Status</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody id="dsktpContainer">
+            <tr template-type="data">
+                <td>
+                    <button class="btn btn-xs btn-default" click="EditProject($item.ProjectID)" title="Edit Project"><i class="fa fa-pencil"></i></button>
+                </td>
+                <td>{{Name}}</td>
+                <td>{{EstimatedHours}}</td>
+                <td>{{CompletedHours}}</td>
+                <td>{{RemainingHours}}</td>
+                <td>{{Status}}</td>
+                <td>
+                    <button class="btn btn-xs btn-danger" click="RemoveProject($item.ProjectID)" title="Remove Project"><i class="fa fa-remove"></i></button>
+                </td>
+            </tr>
+            <tr template-type="nodata">
+                <td colspan="7" style="text-align: center;"><h4>There Are No Items to Display</h4></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td id="projPagCtl" colspan="7"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

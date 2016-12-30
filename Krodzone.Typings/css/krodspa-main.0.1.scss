@@ -67,6 +67,12 @@ context-menu {
 }
 
 
+.form-control-inline {
+    min-width: 0;
+    width: 100%;
+    display: block;
+}
+
 .form-error
 {
     border: 2px solid #b12121 !important;
@@ -120,7 +126,7 @@ context-menu {
     top: 50px;
     background-color: #fff;
     min-width: 100px;
-    max-width: 80%;
+    max-width: 95%;
     padding: 5px;
     border: 1px solid #e8e4e4;
     border-radius: 5px;

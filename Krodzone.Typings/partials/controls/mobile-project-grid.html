@@ -1,0 +1,104 @@
+﻿
+<div class="table-row">
+    <div class="content-cell">
+        <span class="pull-right">
+            <a id="projMobFilterToggle" class="show-pointer"></a>
+        </span>
+    </div>
+</div>
+
+<div class="table-row">
+    <div id="projMobFilterContainer" class="content-cell">
+        <input id="projectMobNameFilter" type="text" class="form-control" placeholder="Filter: Project Name" />
+    </div>
+</div>
+
+<div class="table-row">
+    <div id="mobileContainer" class="content-cell">
+        <div template-type="data" class="table-layout">
+
+            <div class="table-row">
+                <div class="content-cell">
+                    <button class="btn btn-sm btn-default pull-left" click="EditProject($item.ProjectID)" title="Edit Project"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button>
+                </div>
+                <div class="content-cell">
+                    <button class="btn btn-sm btn-danger pull-right" click="RemoveProject($item.ProjectID)" title="Remove Project"><i class="fa fa-remove"></i>&nbsp;&nbsp;Delete</button>
+                </div>
+            </div>
+
+            <div class="table-row margin-top-10">
+                <div class="header-cell">
+                    Name:
+                </div>
+                <div class="content-cell">
+                    {{Name}}
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="header-cell">
+                    Estimated Hours:
+                </div>
+                <div class="content-cell">
+                    {{EstimatedHours}}
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="header-cell">
+                    Completed Hours:
+                </div>
+                <div class="content-cell">
+                    {{CompletedHours}}
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="header-cell">
+                    Remaining Hours:
+                </div>
+                <div class="content-cell">
+                    {{RemainingHours}}
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="header-cell">
+                    Project Status:
+                </div>
+                <div class="content-cell">
+                    {{Status}}
+                </div>
+            </div>
+
+        </div>
+
+        <div template-type="dataloading" class="table-layout">
+
+            <div class="table-row">
+                <div class="content-cell">
+                    <div style="text-align: center;">
+                        <i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;&nbsp;Loading Project Data...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div template-type="nodata" class="table-layout">
+
+            <div class="table-row">
+                <div class="content-cell">
+                    <h4>There Are No Items to Display</h4>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="table-row">
+    <div class="content-cell">
+        <div id="projMobPagCtl" class="margin-top-10"></div>
+    </div>
+</div>
