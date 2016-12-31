@@ -1036,8 +1036,11 @@ module Krodzone {
         public hide = (): KrodDom => {
 
             if (this.isBlockElement() || this.isInlineElement()) {
-                (<HTMLElement>this.Element).style.display = "none";
-                (<HTMLElement>this.Element).style.visibility = "hidden";
+                this.css({
+                    display: "none",
+                    visibility: "hidden"
+                });
+                console.log("Hidden using css");
             }
             
             return this;
@@ -1138,16 +1141,14 @@ module Krodzone {
 
         public show = (): KrodDom => {
 
-            if (this.isBlockElement()) {
-                (<HTMLElement>this.Element).style.display = "";
-                (<HTMLElement>this.Element).style.visibility = "visible";
+            if (this.isBlockElement() || this.isInlineElement()) {
+                this.css({
+                    display: "",
+                    visibility: "visible"
+                });
+                console.log("Displayed using css");
             }
             
-            if (this.isInlineElement()) {
-                (<HTMLElement>this.Element).style.display = "";
-                (<HTMLElement>this.Element).style.visibility = "visible";
-            }
-
             return this;
 
         }
@@ -1213,17 +1214,24 @@ module Krodzone {
         }
 
         private isBlockElement = (): boolean => {
+            var blockElements = ["p", "h1", "h2", "h3", "h4", "h5", "h6", "ol", "ul", "pre", "address", "blockquote", "dl", "div", "fieldset", "form", "hr", "noscript", "table"];
 
-            if (this.Element && this.Element instanceof HTMLElement) {
-                return (this.Element instanceof HTMLBlockElement);
+            if (this.Element) {
 
-                //if (this.Element instanceof HTMLBlockElement ||
-                //    this.Element instanceof HTMLParagraphElement) {
-                //    return true;
-                //}
-                //else {
-                //    return false;
-                //}
+                try {
+                    var elmnt: HTMLElement = <HTMLElement>this.Element;
+
+                    if (elmnt.nodeType === 1) {
+                        return (arrayIndex(blockElements, elmnt.nodeName) > -1);
+                    }
+                    else {
+                        return false;
+                    }
+
+                }
+                catch (e) {
+                    return false;
+                }
                 
             }
 
@@ -1232,17 +1240,24 @@ module Krodzone {
         }
 
         private isInlineElement = (): boolean => {
+            var blockElements = ["p", "h1", "h2", "h3", "h4", "h5", "h6", "ol", "ul", "pre", "address", "blockquote", "dl", "div", "fieldset", "form", "hr", "noscript", "table"];
 
-            if (this.Element && this.Element instanceof HTMLElement) {
-                return !(this.Element instanceof HTMLBlockElement);
+            if (this.Element) {
 
-                //if (this.Element instanceof HTMLBlockElement ||
-                //    this.Element instanceof HTMLParagraphElement) {
-                //    return true;
-                //}
-                //else {
-                //    return false;
-                //}
+                try {
+                    var elmnt: HTMLElement = <HTMLElement>this.Element;
+
+                    if (elmnt.nodeType === 1) {
+                        return (arrayIndex(blockElements, elmnt.nodeName) === -1);
+                    }
+                    else {
+                        return false;
+                    }
+
+                }
+                catch (e) {
+                    return false;
+                }
 
             }
 

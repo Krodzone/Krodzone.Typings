@@ -1,0 +1,206 @@
+@import url(krodzone-main.0.1.css);
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000
+}
+
+header {
+    width: 100%;
+    background-color: #011930;
+    border-bottom: 7px solid #138f32
+}
+
+header div {
+    width: 80%;
+    display: inline-grid;
+    margin-left: auto;
+    margin-right: auto
+}
+
+.header-content {
+    width: 100%;
+    display: inline-table
+}
+
+nav {
+    padding-top: 15px;
+    font-weight: normal
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+nav li {
+    display: inline-table
+}
+
+nav a {
+    display: inline-table;
+    padding: 15px;
+    text-decoration: none;
+    color: #fff
+}
+
+nav a:hover {
+    background-color: #138f32;
+    color: #fff;
+    text-decoration: none
+}
+
+nav a:active {
+    background-color: #138f32;
+    color: #fff;
+    text-decoration: none
+}
+
+nav a:focus {
+    text-decoration: none
+}
+
+.active-menu {
+    border-bottom: 3px solid #fff
+}
+
+.Logo {
+    float: left;
+    width: 300px;
+    height: 77px;
+    margin: 15px;
+    background-image: url(http://www.krodzone.com/images/kz_logo5.png);
+    background-size: 300px 77px;
+    background-repeat: no-repeat
+}
+
+.Site-Title {
+    width: 300px;
+    float: left;
+    padding-top: 15px;
+    margin-left: 25px;
+    font-size: 2em;
+    font-weight: bold;
+    font-style: italic
+}
+
+footer {
+    width: 100%;
+    margin-top: 25px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: #444;
+    background-color: #fff
+}
+
+footer div {
+    width: 80%;
+    padding-left: 5px;
+    padding-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    border-top: 1px solid #333
+}
+
+.graph-legend {
+    display: inline-table;
+    width: 200px;
+    margin-top: 10px;
+    margin-left: 10px
+}
+
+.graph-legend div {
+    display: inline-table;
+    width: 100%;
+    border-top: 1px solid #777;
+    padding: 5px
+}
+
+.graph-legend div bullet {
+    width: 15px;
+    height: 15px;
+    float: left;
+    border: 1px solid #222;
+    border-radius: 4px;
+    margin-top: 3px
+}
+
+.graph-legend div span {
+    float: left;
+    margin-left: 10px;
+    font-size: 90%
+}
+
+.panel {
+    -moz-box-shadow: 2px 2px 5px 1px rgba(187, 187, 187, 0.3);
+    -webkit-box-shadow: 2px 2px 5px 1px rgba(187, 187, 187, 0.3);
+    box-shadow: 2px 2px 5px 1px rgba(187, 187, 187, 0.3);
+    font-size: 90%;
+    margin-bottom: 75px;
+    border: 1px solid #999;
+    border-radius: 6px
+}
+
+.panel .title {
+    width: 100%;
+    font-size: 150%;
+    color: #fff;
+    background-color: #011930;
+    border-bottom: 5px solid #138f32;
+    padding: 10px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px
+}
+
+.panel .body {
+    width: 100%;
+    min-height: 100px;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px
+}
+
+.expandable-panel {
+    width: 100%;
+    display: inline-block
+}
+
+.expandable-panel .header {
+    width: 100%;
+    display: inline-grid;
+    padding: 15px 5px 15px 5px;
+    color: #555;
+    font-size: 95%
+}
+
+.expandable-panel .header div {
+    float: left;
+    font-weight: bold
+}
+
+.expandable-panel .header span {
+    width: 20px !important;
+    height: 20px !important;
+    float: right;
+    cursor: pointer;
+    text-align: center
+}
+
+.expandable-panel .body {
+    width: 100%;
+    display: inline-grid;
+    min-height: 15px;
+    padding: 20px
+}
+
+.show-pointer {
+    cursor: pointer
+}

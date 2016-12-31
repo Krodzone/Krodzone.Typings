@@ -912,8 +912,16 @@ var KrodSpa;
             that.StartWatch = function () {
                 if (that.Element !== undefined && that.Model !== undefined && that.Model !== null) {
                     that.IntervalID = setInterval(function (iterVw) {
-                        iterVw.UpdateView();
-                    }, 500, that.SelectedView);
+                        iterVw = (iterVw ? iterVw : (that ? that.SelectedView : undefined));
+                        if (iterVw) {
+                            try {
+                                iterVw.UpdateView();
+                            }
+                            catch (e) {
+                                var s = ""; // Declared to enable break point
+                            }
+                        }
+                    }, 1000, that.SelectedView);
                 }
             };
             that.EndWatch = function () {
@@ -946,44 +954,60 @@ var KrodSpa;
                         }
                     }
                 });
-                $$(that.IterationViews.DesktopView.MainElement).hide();
-                $$(that.IterationViews.MobileView.MainElement).hide();
-                var documentWidth = $$(document).width();
-                if (documentWidth >= 500) {
-                    $$(that.IterationViews.DesktopView.MainElement).show();
-                    that.SelectedView = that.IterationViews.DesktopView;
-                }
-                else {
-                    $$(that.IterationViews.MobileView.MainElement).show();
-                    that.SelectedView = that.IterationViews.MobileView;
-                }
-                window.addEventListener("resize", function (ev) {
-                    setTimeout(function () {
-                        var docWd = $$(document).width();
-                        if (docWd >= 500) {
-                            if (!$$(that.IterationViews.DesktopView.MainElement).visible()) {
-                                $$(that.IterationViews.MobileView.MainElement).hide();
-                                $$(that.IterationViews.DesktopView.MainElement).show();
-                                that.SelectedView = that.IterationViews.DesktopView;
-                                that.SelectedView.UpdateView();
+                /*
+                    Give the IterationView(s) enough time to load the templates before hiding their
+                    respective containers
+                */
+                setTimeout(function () {
+                    $$(that.IterationViews.DesktopView.MainElement).hide();
+                    $$(that.IterationViews.MobileView.MainElement).hide();
+                    var documentWidth = $$(document).width();
+                    if (documentWidth >= 500) {
+                        $$(that.IterationViews.DesktopView.MainElement).show();
+                        that.SelectedView = that.IterationViews.DesktopView;
+                    }
+                    else {
+                        $$(that.IterationViews.MobileView.MainElement).show();
+                        that.SelectedView = that.IterationViews.MobileView;
+                    }
+                    window.addEventListener("resize", function (ev) {
+                        setTimeout(function () {
+                            var docWd = $$(document).width();
+                            if (docWd >= 500) {
+                                if (!$$(that.IterationViews.DesktopView.MainElement).visible()) {
+                                    $$(that.IterationViews.MobileView.MainElement).hide();
+                                    $$(that.IterationViews.DesktopView.MainElement).show();
+                                    that.SelectedView = that.IterationViews.DesktopView;
+                                    that.SelectedView.UpdateView();
+                                }
                             }
-                        }
-                        else {
-                            if (!$$(that.IterationViews.MobileView.MainElement).visible()) {
-                                $$(that.IterationViews.DesktopView.MainElement).hide();
-                                $$(that.IterationViews.MobileView.MainElement).show();
-                                that.SelectedView = that.IterationViews.MobileView;
-                                that.SelectedView.UpdateView();
+                            else {
+                                if (!$$(that.IterationViews.MobileView.MainElement).visible()) {
+                                    $$(that.IterationViews.DesktopView.MainElement).hide();
+                                    $$(that.IterationViews.MobileView.MainElement).show();
+                                    that.SelectedView = that.IterationViews.MobileView;
+                                    that.SelectedView.UpdateView();
+                                }
                             }
-                        }
-                    }, 100);
-                });
+                        }, 100);
+                    });
+                }, 500);
             }
+            /*
+                Give the UI enough time to be built before registering the filter event handlers
+            */
             setTimeout(function () {
                 Filters.forEach(function (filter) {
                     var inputControl = filter.Control instanceof HTMLInputElement ? filter.Control : undefined;
                     if (inputControl !== undefined && inputControl.tagName.toUpperCase() === "INPUT" && inputControl.type.toUpperCase() !== "CHECKBOX") {
                         $(filter.Control).on("keyup", function (ev) {
+                            FilterObj.Add(filter.Attribute, $(this).val(), 5);
+                            that.FilteredItems = that.Model.filter(FilterObj.MeetsCriteria);
+                            if (that.FilteredItems) {
+                                that.SelectedView.UpdateView(that.FilteredItems);
+                            }
+                        });
+                        $(filter.Control).on("change", function (ev) {
                             FilterObj.Add(filter.Attribute, $(this).val(), 5);
                             that.FilteredItems = that.Model.filter(FilterObj.MeetsCriteria);
                             if (that.FilteredItems) {

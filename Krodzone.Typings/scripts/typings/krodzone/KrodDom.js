@@ -654,8 +654,11 @@ var Krodzone;
             };
             this.hide = function () {
                 if (_this.isBlockElement() || _this.isInlineElement()) {
-                    _this.Element.style.display = "none";
-                    _this.Element.style.visibility = "hidden";
+                    _this.css({
+                        display: "none",
+                        visibility: "hidden"
+                    });
+                    console.log("Hidden using css");
                 }
                 return _this;
             };
@@ -724,13 +727,12 @@ var Krodzone;
                 return _this;
             };
             this.show = function () {
-                if (_this.isBlockElement()) {
-                    _this.Element.style.display = "";
-                    _this.Element.style.visibility = "visible";
-                }
-                if (_this.isInlineElement()) {
-                    _this.Element.style.display = "";
-                    _this.Element.style.visibility = "visible";
+                if (_this.isBlockElement() || _this.isInlineElement()) {
+                    _this.css({
+                        display: "",
+                        visibility: "visible"
+                    });
+                    console.log("Displayed using css");
                 }
                 return _this;
             };
@@ -777,14 +779,38 @@ var Krodzone;
                 }
             };
             this.isBlockElement = function () {
-                if (_this.Element && _this.Element instanceof HTMLElement) {
-                    return (_this.Element instanceof HTMLBlockElement);
+                var blockElements = ["p", "h1", "h2", "h3", "h4", "h5", "h6", "ol", "ul", "pre", "address", "blockquote", "dl", "div", "fieldset", "form", "hr", "noscript", "table"];
+                if (_this.Element) {
+                    try {
+                        var elmnt = _this.Element;
+                        if (elmnt.nodeType === 1) {
+                            return (arrayIndex(blockElements, elmnt.nodeName) > -1);
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    catch (e) {
+                        return false;
+                    }
                 }
                 return false;
             };
             this.isInlineElement = function () {
-                if (_this.Element && _this.Element instanceof HTMLElement) {
-                    return !(_this.Element instanceof HTMLBlockElement);
+                var blockElements = ["p", "h1", "h2", "h3", "h4", "h5", "h6", "ol", "ul", "pre", "address", "blockquote", "dl", "div", "fieldset", "form", "hr", "noscript", "table"];
+                if (_this.Element) {
+                    try {
+                        var elmnt = _this.Element;
+                        if (elmnt.nodeType === 1) {
+                            return (arrayIndex(blockElements, elmnt.nodeName) === -1);
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    catch (e) {
+                        return false;
+                    }
                 }
                 return false;
             };

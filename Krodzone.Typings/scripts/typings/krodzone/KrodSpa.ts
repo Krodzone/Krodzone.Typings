@@ -1324,8 +1324,19 @@ module KrodSpa {
                 if (that.Element !== undefined && that.Model !== undefined && that.Model !== null) {
                     
                     that.IntervalID = setInterval(function (iterVw: IterationView) {
-                        iterVw.UpdateView();
-                    }, 500, that.SelectedView);
+                        iterVw = (iterVw ? iterVw : (that ? that.SelectedView : undefined));
+
+                        if (iterVw) {
+                            try {
+                                iterVw.UpdateView();
+                            }
+                            catch (e) {
+                                var s = ""; // Declared to enable break point
+                                //  Suppress
+                            }
+                        }
+
+                    }, 1000, that.SelectedView);
 
                 }
 
@@ -1376,53 +1387,65 @@ module KrodSpa {
 
                 });
 
-                $$(that.IterationViews.DesktopView.MainElement).hide();
-                $$(that.IterationViews.MobileView.MainElement).hide();
 
-                var documentWidth: number = $$(document).width();
+                /*
+                    Give the IterationView(s) enough time to load the templates before hiding their
+                    respective containers
+                */
+                setTimeout(function () {
 
-                if (documentWidth >= 500) {
-                    $$(that.IterationViews.DesktopView.MainElement).show();
-                    that.SelectedView = that.IterationViews.DesktopView;
-                }
-                else {
-                    $$(that.IterationViews.MobileView.MainElement).show();
-                    that.SelectedView = that.IterationViews.MobileView;
-                }
+                    $$(that.IterationViews.DesktopView.MainElement).hide();
+                    $$(that.IterationViews.MobileView.MainElement).hide();
+                    
+                    var documentWidth: number = $$(document).width();
 
-                window.addEventListener("resize", function (ev) {
+                    if (documentWidth >= 500) {
+                        $$(that.IterationViews.DesktopView.MainElement).show();
+                        that.SelectedView = that.IterationViews.DesktopView;
+                    }
+                    else {
+                        $$(that.IterationViews.MobileView.MainElement).show();
+                        that.SelectedView = that.IterationViews.MobileView;
+                    }
 
-                    setTimeout(function () {
-                        var docWd: number = $$(document).width();
-                        
-                        if (docWd >= 500) {
+                    window.addEventListener("resize", function (ev) {
 
-                            if (!$$(that.IterationViews.DesktopView.MainElement).visible()) {
-                                $$(that.IterationViews.MobileView.MainElement).hide();
-                                $$(that.IterationViews.DesktopView.MainElement).show();
-                                that.SelectedView = that.IterationViews.DesktopView;
-                                that.SelectedView.UpdateView();
+                        setTimeout(function () {
+                            var docWd: number = $$(document).width();
+
+                            if (docWd >= 500) {
+
+                                if (!$$(that.IterationViews.DesktopView.MainElement).visible()) {
+                                    $$(that.IterationViews.MobileView.MainElement).hide();
+                                    $$(that.IterationViews.DesktopView.MainElement).show();
+                                    that.SelectedView = that.IterationViews.DesktopView;
+                                    that.SelectedView.UpdateView();
+                                }
+
                             }
-                            
-                        }
-                        else {
+                            else {
 
-                            if (!$$(that.IterationViews.MobileView.MainElement).visible()) {
-                                $$(that.IterationViews.DesktopView.MainElement).hide();
-                                $$(that.IterationViews.MobileView.MainElement).show();
-                                that.SelectedView = that.IterationViews.MobileView;
-                                that.SelectedView.UpdateView();
+                                if (!$$(that.IterationViews.MobileView.MainElement).visible()) {
+                                    $$(that.IterationViews.DesktopView.MainElement).hide();
+                                    $$(that.IterationViews.MobileView.MainElement).show();
+                                    that.SelectedView = that.IterationViews.MobileView;
+                                    that.SelectedView.UpdateView();
+                                }
+
                             }
-                            
-                        }
 
-                    }, 100);
+                        }, 100);
 
-                });
+                    });
+
+                }, 500);
 
             }
 
-            
+
+            /*
+                Give the UI enough time to be built before registering the filter event handlers
+            */
             setTimeout(function () {
 
                 Filters.forEach((filter: FilterAttribute): void => {
@@ -1430,6 +1453,20 @@ module KrodSpa {
 
                     if (inputControl !== undefined && inputControl.tagName.toUpperCase() === "INPUT" && inputControl.type.toUpperCase() !== "CHECKBOX") {
                         $(filter.Control).on("keyup", function (ev) {
+
+                            FilterObj.Add(filter.Attribute, $(this).val(), 5);
+
+                            that.FilteredItems = that.Model.filter(FilterObj.MeetsCriteria);
+
+
+                            if (that.FilteredItems) {
+                                that.SelectedView.UpdateView(that.FilteredItems);
+                            }
+
+
+                        });
+
+                        $(filter.Control).on("change", function (ev) {
 
                             FilterObj.Add(filter.Attribute, $(this).val(), 5);
 
@@ -2164,37 +2201,7 @@ module KrodSpa {
                 console.count();
             }
         }
-                //that.Filters.forEach((filter: FilterAttribute): void => {
-                //    var inputControl: HTMLInputElement = filter.Control instanceof HTMLInputElement ? <HTMLInputElement>filter.Control : undefined;
-
-                //    if (inputControl !== undefined && inputControl.tagName.toUpperCase() === "INPUT" && inputControl.type.toUpperCase() !== "CHECKBOX") {
-                //        $(filter.Control).on("keyup", function (ev) {
-
-                //            that.FilterObj.Add(filter.Attribute, $(this).val(), 5);
-
-                //            that.FilteredItems = that.Model.filter(that.FilterObj.MeetsCriteria);
-
-
-                //            if (that.FilteredItems) {
-                //                that.PageIndex = 0;
-                //                //that.TotalItems = (that.FilteredItems !== undefined ? that.FilteredItems.length : 0);
-                //                that.TotalPages = Math.ceil((that.FilteredItems !== undefined ? that.FilteredItems.length : 0) / (that.PageTotal ? (that.PageTotal > 0 ? that.PageTotal : 5) : 5));
-
-                //                var startIndex = that.PageIndex * that.PageTotal;
-                //                var endIndex = (startIndex + that.PageTotal) > that.FilteredItems.length ? that.FilteredItems.length : (startIndex + that.PageTotal);
-
-                //                //displayItems(that.FilteredItems.slice(startIndex, endIndex), that.ModelTemplate);
-
-                //                if (that.PaginationCtl) {
-                //                    $(that.PaginationCtl).find('[pagination-display="true"]').html("Page " + (that.PageIndex + 1) + " of " + that.TotalPages);
-                //                }
-
-                //            }
-
-
-                //        });
-                //    }
-                //});
+                
     }
     
     export class IterationCollection {
